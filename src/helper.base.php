@@ -139,10 +139,10 @@ if(!function_exists('is_production')){
 }
 if(!function_exists('path_base')){      function path_base      ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }}
 if(!function_exists('path_app')){       function path_app       ($path=''):string { return path_base("app".DIRECTORY_SEPARATOR."{$path}"); }}
-if(!function_exists('path_domain')){    function path_domian    ($path=''):string { return path_base("domain".DIRECTORY_SEPARATOR."{$path}"); }}
-if(!function_exists('path_config')){    function path_config    ($path=''):string { return path_domian("config".DIRECTORY_SEPARATOR."{$path}"); }}
-if(!function_exists('path_routes')){    function path_routes    ($path=''):string { return path_domian("routing".DIRECTORY_SEPARATOR."{$path}"); }}
-if(!function_exists('path_view')){      function path_view      ($path=''):string { return path_domian("views".DIRECTORY_SEPARATOR."{$path}"); }}
+if(!function_exists('path_domain')){    function path_domain    ($path=''):string { return path_base("domain".DIRECTORY_SEPARATOR."{$path}"); }}
+if(!function_exists('path_config')){    function path_config    ($path=''):string { return path_domain("config".DIRECTORY_SEPARATOR."{$path}"); }}
+if(!function_exists('path_routes')){    function path_routes    ($path=''):string { return path_domain("routing".DIRECTORY_SEPARATOR."{$path}"); }}
+if(!function_exists('path_view')){      function path_view      ($path=''):string { return path_domain("views".DIRECTORY_SEPARATOR."{$path}"); }}
 
 
 if(!function_exists('url_base'))
