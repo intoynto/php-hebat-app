@@ -1,7 +1,7 @@
 <?php
 declare (strict_types=1);
 
-namespace Intoy\HebatFactory\Loaders;
+namespace Intoy\HebatApp\Loaders;
 
 use Intoy\HebatApp\Session;
 use Intoy\HebatFactory\Loader;

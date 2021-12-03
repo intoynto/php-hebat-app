@@ -2,7 +2,7 @@
 
 declare (strict_types=1);
 
-namespace Intoy\HebatFactory\Loaders;
+namespace Intoy\HebatApp\Loaders;
 
 use Slim\Views\Twig;
 use Twig\Extension\DebugExtension as TwigDebugExtension;
