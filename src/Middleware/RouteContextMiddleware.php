@@ -10,8 +10,8 @@ use Slim\Routing\Route;
 
 use Intoy\HebatFactory\Redirect;
 use Intoy\HebatFactory\Context;
-use Intoy\HebatFactory\ClassFinder;
 use Intoy\HebatFactory\InputRequest;
+use Intoy\HebatApp\ClassFinder;
 
 class RouteContextMiddleware 
 {

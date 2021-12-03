@@ -2,7 +2,7 @@
 
 declare (strict_types=1);
 
-namespace Intoy\HebatFactory;
+namespace Intoy\HebatApp;
 
 final class ClassFinder
 {
