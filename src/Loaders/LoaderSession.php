@@ -3,8 +3,8 @@ declare (strict_types=1);
 
 namespace Intoy\HebatFactory\Loaders;
 
+use Intoy\HebatApp\Session;
 use Intoy\HebatFactory\Loader;
-use Intoy\HebatFactory\Session;
 use Intoy\HebatFactory\Foundation\Guard;
 use Psr\Container\ContainerInterface;
 
