@@ -1,7 +1,7 @@
 <?php
 declare (strict_types=1);
 
-namespace Intoy\HebatFactory;
+namespace Intoy\HebatApp\Controllers;
 
 use Slim\Views\Twig;
 use Psr\Http\Message\ResponseInterface as Response;
