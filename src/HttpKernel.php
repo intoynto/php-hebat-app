@@ -4,6 +4,8 @@ declare (strict_types=1);
 namespace Intoy\HebatApp;
 
 use Psr\Log\LoggerInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
+
 use Intoy\HebatFactory\Kernel;
 use Intoy\HebatFactory\Renderer\{HtmlErrorRenderer,JsonErrorRenderer};
 
@@ -17,9 +19,10 @@ use Intoy\HebatApp\Loaders\{
     LoaderView,
 };
 
-use App\JWTMiddleware\JWTMiddleware;
+use Intoy\HebatApp\JWTMiddleware\JWTMiddleware;
+use Intoy\HebatApp\Handlers\ShutdownHandler;
 
-use App\Middleware\{
+use Intoy\HebatApp\Middleware\{
     SessionMiddleware,
     BasePathMiddleware,
     GuardMiddleware,
