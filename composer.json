@@ -1,0 +1,29 @@
+{
+    "name": "intoy/hebat-app",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Intoy\\HebatApp\\": "src/"
+        },
+        "files": [
+            "./src/helper.base.php"
+        ] 
+    },
+    "authors": [
+        {
+            "name": "intoynto",
+            "email": "intoynto@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "monolog/monolog": "^2.3",
+        "firebase/php-jwt": "^5.5",
+        "dflydev/fig-cookies": "^3.0",
+        "slim/slim": "^4.9",
+        "slim/twig-view": "^3.2",
+        "intoy/hebat-factory": "^0.0.2",
+        "intoy/hebat-database": "^0.0.4",
+        "intoy/hebat-validation": "^0.0.1"
+    }
+}
