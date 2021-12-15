@@ -3,6 +3,7 @@
 use Intoy\HebatFactory\App;
 use Intoy\HebatFactory\AppFactory;
 use Intoy\HebatFactory\Redirect;
+use Intoy\HebatFactory\InputRequest;
 use Intoy\HebatDatabase\Connection;
 use Intoy\HebatDatabase\DBManager;
 use Intoy\HebatSupport\Optional;
@@ -240,7 +241,7 @@ if(!function_exists('back'))
      */
     function back()
     {
-        $route=app()->resolve(\App\Factory\InputRequest::class);
+        $route=app()->resolve(InputRequest::class);
         $back=$route->getCurrentUri();        
         return redirect($back);
     }
