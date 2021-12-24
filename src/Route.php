@@ -139,7 +139,7 @@ class Route
 
 
     /**
-     * Add GET route
+     * Add POST route
      *
      * @param  string          $pattern  The route URI pattern
      * @param  callable|string $callable The route callback routine
@@ -153,7 +153,7 @@ class Route
 
 
     /**
-     * Add GET route
+     * Add DELETE route
      *
      * @param  string          $pattern  The route URI pattern
      * @param  callable|string $callable The route callback routine
@@ -163,5 +163,20 @@ class Route
     public static function delete(string $pattern, $callable): RouteInterface
     {
         return static::resolveController('delete',$pattern,$callable);
+    }
+
+
+
+    /**
+     * Add OPTIONS route
+     *
+     * @param  string          $pattern  The route URI pattern
+     * @param  callable|string $callable The route callback routine
+     *
+     * @return RouteInterface
+     */
+    public static function options(string $pattern, $callable): RouteInterface
+    {
+        return static::resolveController('options',$pattern,$callable);
     }
 }
