@@ -130,20 +130,20 @@ class HttpKernel extends Kernel
         {
             $contexts=[
                 "text/html"=>HtmlErrorRenderer::class,
-                "application/json",JsonErrorRenderer::class,
-                "text/json",JsonErrorRenderer::class
+                "application/json"=>JsonErrorRenderer::class,
+                "text/json"=>JsonErrorRenderer::class
             ];
-            foreach(array_keys($contexts) as $key => $type)
-            {
-                if(!in_array($type,array_keys($this->errorRenders)))
-                {
-                    $this->registerErrorRender($type,$contexts[$type]);
+            foreach($contexts as $contextType => $render)
+            {                
+                if(!in_array($contextType,array_keys($this->errorRenders)))
+                {                    
+                    $this->registerErrorRender($contextType,$render);
                 }
             }
 
-            foreach(array_keys($this->errorRenders) as $key => $type)
+            foreach($this->errorRenders as $contextType => $render)
             {
-                $errorHandle->registerErrorRenderer($type,$this->errorRenders[$type]);
+                $errorHandle->registerErrorRenderer($contextType,$render);
             }
         }
         app()->add(BasePathMiddleware::class);
