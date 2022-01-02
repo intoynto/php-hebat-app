@@ -22,7 +22,7 @@
         "dflydev/fig-cookies": "^3.0",
         "slim/slim": "^4.9",
         "slim/twig-view": "^3.2",
-        "intoy/hebat-factory": "^0.0.4",
+        "intoy/hebat-factory": "^0.0.5",
         "intoy/hebat-database": "^0.0.6",
         "intoy/hebat-validation": "^0.0.3"
     }

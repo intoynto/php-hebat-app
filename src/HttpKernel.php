@@ -122,16 +122,29 @@ class HttpKernel extends Kernel
         }
     }
 
-
     protected function onFinishSetup()
     {
         $mid=$this->resolveErrorMilddleware();
         $errorHandle=$mid->getDefaultErrorHandler();
         if($errorHandle instanceof \Slim\Handlers\ErrorHandler)
         {
-            $errorHandle->registerErrorRenderer("text/html",HtmlErrorRenderer::class);
-            $errorHandle->registerErrorRenderer("application/json",JsonErrorRenderer::class);
-            $errorHandle->registerErrorRenderer("text/json",JsonErrorRenderer::class);
+            $contexts=[
+                "text/html"=>HtmlErrorRenderer::class,
+                "application/json",JsonErrorRenderer::class,
+                "text/json",JsonErrorRenderer::class
+            ];
+            foreach($contexts as $context => $cb)
+            {
+                if(!in_array($context,array_keys($this->errorRenders)))
+                {
+                    $this->registerErrorRender($context,$cb);
+                }
+            }
+
+            foreach($this->errorRenders as $context => $cb)
+            {
+                $errorHandle->registerErrorRenderer($context,$cb);
+            }
         }
         app()->add(BasePathMiddleware::class);
     }
