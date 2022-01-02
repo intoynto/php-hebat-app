@@ -41,18 +41,29 @@ class Route
     /**
      * Add GET route
      *
-     * @param  string          $route  GET ..etc
+     * @param  string          $routeMethod  GET ..etc
      * @param  string          $pattern  The route URI pattern
      * @param  callable|string $callable The route callback routine
      *
      * @return RouteInterface
      */
-    protected static function resolveController(string $route, string $pattern, $callable):RouteInterface
+    protected static function resolveController(string $routeMethod, string $pattern, $callable):RouteInterface
+    {
+        $newCallable=static::resolveCallable($callable);
+        return static::$app->$routeMethod($pattern,$newCallable);
+    }
+
+    /**
+     * @param callable|array|string $callable
+     * @return callable|array|string 
+     */
+    protected static function resolveCallable($callable)
     {
         if(is_callable($callable) || is_array($callable))
         {
-            return static::$app->$route($pattern,$callable);
+            return $callable;
         }
+
         $matches=static::resolveNotation($callable);
         
         $class=$callable;
@@ -71,9 +82,14 @@ class Route
             $class=$namespace.$class;
         }
         $class.=$method?":".$method:'';
-        return static::$app->$route($pattern,$class);
+
+        return $class;
     }
 
+
+    /**
+     * Revole notataion
+     */
     protected static function resolveNotation(string $toResolve):array
     {
         preg_match(static::pattern1, $toResolve, $matches);
@@ -178,5 +194,36 @@ class Route
     public static function options(string $pattern, $callable): RouteInterface
     {
         return static::resolveController('options',$pattern,$callable);
+    }
+
+
+    /**
+     * Add MAP route
+     *
+     * @param  string[]        $methods  Numeric array of HTTP method names
+     * @param  string          $pattern  The route URI pattern
+     * @param  callable|string $callable The route callback routine
+     *
+     * @return RouteInterface
+     */
+    public static function map(array $methods, string $pattern, $callable): RouteInterface
+    {
+        $newCallable=static::resolveCallable($callable);
+        $routeMethod="map";
+        $originMethods=$methods;
+        $methods=[];
+        $allows=['GET','POST','PUT','DELETE'];
+        foreach(array_values($originMethods) as $val)
+        {
+            $method=strtoupper(trim((string)$val));
+            if(in_array($method,$allows)){
+                $methods[]=$method;
+            }
+        }
+        if(count($methods)<1){
+            $methods=["OPTIONS"];
+        }
+        
+        return static::$app->$routeMethod($methods,$pattern,$newCallable);
     }
 }
