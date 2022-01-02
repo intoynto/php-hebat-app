@@ -133,7 +133,7 @@ class HttpKernel extends Kernel
                 "application/json",JsonErrorRenderer::class,
                 "text/json",JsonErrorRenderer::class
             ];
-            foreach(array_keys($contexts) as $type)
+            foreach(array_keys($contexts) as $key => $type)
             {
                 if(!in_array($type,array_keys($this->errorRenders)))
                 {
@@ -141,7 +141,7 @@ class HttpKernel extends Kernel
                 }
             }
 
-            foreach(array_keys($this->errorRenders) as $type)
+            foreach(array_keys($this->errorRenders) as $key => $type)
             {
                 $errorHandle->registerErrorRenderer($type,$this->errorRenders[$type]);
             }
