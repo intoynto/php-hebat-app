@@ -133,17 +133,17 @@ class HttpKernel extends Kernel
                 "application/json",JsonErrorRenderer::class,
                 "text/json",JsonErrorRenderer::class
             ];
-            foreach($contexts as $context => $cb)
+            foreach(array_keys($contexts) as $type)
             {
-                if(!in_array($context,array_keys($this->errorRenders)))
+                if(!in_array($type,array_keys($this->errorRenders)))
                 {
-                    $this->registerErrorRender($context,$cb);
+                    $this->registerErrorRender($type,$contexts[$type]);
                 }
             }
 
-            foreach($this->errorRenders as $context => $cb)
+            foreach(array_keys($this->errorRenders) as $type)
             {
-                $errorHandle->registerErrorRenderer($context,$cb);
+                $errorHandle->registerErrorRenderer($type,$this->errorRenders[$type]);
             }
         }
         app()->add(BasePathMiddleware::class);
