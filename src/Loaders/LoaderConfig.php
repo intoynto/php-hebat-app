@@ -27,10 +27,11 @@ class LoaderConfig extends Loader
                     $settings=$require_config;
                 }
                 //set in data
-                data_set($config,Str::before($file,'.php'),$require_config);
+                $config_name=Str::before($file,'.php');
+                data_set($config,$config_name,$require_config);
+                $this->app->bind('config',$config); // config into container
             }
 
-            $this->app->bind('config',$config); // config into container
             if($settings)
             {
                 $this->app->bind('settings',$settings); // settings into container
