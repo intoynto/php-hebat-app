@@ -189,6 +189,75 @@ return [
 ];
 ```
 
+### <b>config/routes.php</b>
+Contoh konfigurasi routing :
+```php
+<?php
+
+use App\TokenJwt;
+
+return [
+    'controllers'=>[
+        'web'=>[
+            '\\App\\Controllers\\',
+        ],
+        'api'=>[
+            '\\App\\Controllers\\',
+        ],
+    ],
+    'path'=>[
+        'api'=>'',
+        'web'=>'',
+    ],
+    'prefix'=>[
+        'api'=>'/api',
+        'web'=>'',
+    ],
+    // attribut yang akan diextract oleh middleware yang akan di bind ke parameter queryParams atau parseBody
+    "jwt_apply_params"=>[
+        "tahun",
+        "id_org"
+    ],
+
+    //  konfigurasi auth midleware JWTMiddleware
+    'jwt'=>[
+        'path'=>url_base('api'),
+        "ignore"=>[
+            url_base("api/report")
+        ],
+        'leeway'=>60,
+        'secret'=>TokenJwt::SECRET_KEY,
+        'algorithm'=>'HS256',
+        'cookie'=>TokenJwt::JWT_COOKIE, //attribut di cookie
+    ],
+];
+```
+
+### <b>config/session.php</b>
+Contoh konfigurasi session :
+```php
+<?php
+
+return [
+    // Lax will sent the cookie for cross-domain GET requests
+    'cookie_samesite' => 'Lax',
+
+    // Optional: Sent cookie only over https
+    'cache_expire'=>60*24, // 1 hari
+];
+
+```
+
+### <b>config/logger.php</b>
+Contoh konfigurasi logger :
+```php
+<?php
+
+return [
+    'path'=>path_base('_cache'),
+];
+```
+
 ## Development 
 Fork / Clone / Github Cli :<br/>
 > <b>gh repo clone intoynto/php-hebat-app</b>
