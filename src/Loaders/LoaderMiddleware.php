@@ -7,7 +7,7 @@ use Psr\Container\ContainerInterface;
 use Slim\Views\TwigMiddleware;
 use Slim\Middleware\ErrorMiddleware;
 use Intoy\HebatFactory\Loader;
-use Intoy\HebatApp\Middleware\GuardMiddleware;
+//use Intoy\HebatApp\Middleware\GuardMiddleware;
 
 class LoaderMiddleware extends Loader
 {
@@ -71,8 +71,10 @@ class LoaderMiddleware extends Loader
         ]);
     }
 
+    /*
     protected function afterBoot()
     {
+        
         if($this->app->has(GuardMiddleware::class))
         {
             $mid=$this->app->resolve(GuardMiddleware::class);
@@ -82,5 +84,7 @@ class LoaderMiddleware extends Loader
                 return back();
             });
         }
+        
     }
+    */
 }
