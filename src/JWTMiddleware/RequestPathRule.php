@@ -44,6 +44,7 @@ final class RequestPathRule implements RuleInterface
             $path=rtrim($basePath,"/")."/".ltrim($path,"/");
         }
 
+        $path="/".ltrim($path,"/");
         return $path;
     }
 

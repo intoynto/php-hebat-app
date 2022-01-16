@@ -45,7 +45,7 @@ class JWTMiddleware implements MiddlewareInterface
      * @var mixed[]
      */
     private $options = [
-        "secure" => true,
+        "secure" => false, // secure schema https
         "relaxed" => ["localhost", "127.0.0.1"],
         "algorithm" => ["HS256", "HS512", "HS384"],
         "header" => "Authorization",
