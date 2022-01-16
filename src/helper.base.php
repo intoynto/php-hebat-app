@@ -124,11 +124,17 @@ if (!function_exists('config'))
     }
 }
 
-if(!function_exists('is_production'))
-{  
+if(!function_exists('is_production')){  
     function is_production  ():bool 
     {
-        $env=(string)config("app.env");       
+        $env="production";
+        if(app()->has("config"))
+        {
+            $env=(string)config("app.env");
+        }
+        else {
+            $env=env("APP_ENV","production");
+        }
         return strtolower((string)$env)==="production";
     }
 }
@@ -165,7 +171,7 @@ if(!function_exists('full_url'))
      */
     function full_url($path='')
     {       
-        $url=(string)config("app.url");
+        $url=env("APP_URL","/");
         $url=rtrim($url,"/");
         return "{$url}/{$path}";
     }

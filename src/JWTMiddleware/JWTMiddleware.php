@@ -99,7 +99,8 @@ class JWTMiddleware implements MiddlewareInterface
         $host = $request->getUri()->getHost();
 
         /* If rules say we should not authenticate call next and return. */
-        if (false === $this->shouldAuthenticate($request)) {
+        if (false === $this->shouldAuthenticate($request)) 
+        {
             return $handler->handle($request);
         }
 
@@ -244,7 +245,8 @@ class JWTMiddleware implements MiddlewareInterface
                 return $handlerResponse;
             }
         }
-        return $response;
+        $response->getBody()->write(json_encode($arguments));
+        return $response->withHeader("content-type","application/json");
     }
 
 
