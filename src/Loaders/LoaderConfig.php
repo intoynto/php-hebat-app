@@ -28,9 +28,9 @@ class LoaderConfig extends Loader
                 }
                 //set in data
                 data_set($config,Str::before($file,'.php'),$require_config);
+                $this->app->bind('config',$config); // re bind config into container
             }
 
-            $this->app->bind('config',$config); // config into container
             if($settings)
             {
                 $this->app->bind('settings',$settings); // settings into container
