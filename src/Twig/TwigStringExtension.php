@@ -45,12 +45,23 @@ class TwigStringExtension extends AbstractExtension
     }
 
     /**
+     * @param mixed $value
+     * @return string|null
+     */
+    public function toBase64($value)
+    {
+        return $value!==null?base64_encode((string)$value):null;
+    }
+
+    /**
      * @return TwigFilter[]
      */
     public function getFilters()        
     {
         return [
             new TwigFilter('slug',[$this,'slugify']),
+            new TwigFilter('to_slug',[$this,'slugify']),
+            new TwigFilter('to_base64',[$this,'toBase64']),
         ];
     }    
 }
