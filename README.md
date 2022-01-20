@@ -152,13 +152,9 @@ contoh jika menggunakan array configurasi request :
 ```php
 <?php
 
-use App\Requests\AuthLoginRequest;
-use App\Requests\AuthSignRequest;
-
 return [
     "web"=>[
-        AuthLoginRequest::class,
-        AuthSignRequest::class,
+        "namespace"=>"App\\Requests",
     ],
     "api"=>[
         "namespace"=>"App\\Requests",
@@ -231,6 +227,49 @@ return [
         'cookie'=>TokenJwt::JWT_COOKIE, //attribut di cookie
     ],
 ];
+```
+
+### Dekorasi konfigurasi jwt pada <b>config/routes.php</b>
+```php
+<?php
+
+use App\TokenJwt;
+use Intoy\HebatApp\JWTMiddleware\RequestMethodRule;
+use Intoy\HebatApp\JWTMiddleware\RequestPathRule;
+
+return [
+    ///... your config prevous
+
+    // line jwt config
+    //  konfigurasi auth midleware JWTMiddleware
+    'jwt'=>[
+        'secret'=>TokenJwt::SECRET_KEY, // key secreen
+        'algorithm'=>'HS256', // algoritm token JWT secret
+        'leeway'=>60, // leeway time JWT
+        'cookie'=>TokenJwt::JWT_COOKIE, //attribut di cookie
+
+        /**
+         * Path sebaiknya relative terhadap web sub folder
+         * Contoh misalnya path perlu pengecekan authentikasi adalah path "api"
+         * Dan folder web BERADA di subfolder "my-app" maka path direkomendasikan relative menjadi "my-app/api"
+         * Jika web TIDAK BERADA pada sub-folder maka cukup "api" atau "/api"
+         */       
+        "rules"=>[
+            // setup rule METHOD
+            new RequestMethodRule([
+                "ignore"=>["OPTIONS","GET"], // allows methods 
+            ]),
+            // setup secure path
+            new RequestPathRule([
+                "path"=>"api", // secure path
+                "ignore"=>[
+                    "api/ping", // not secure this path
+                    "api/report", // not secure this path
+                ]
+            ]),
+        ]        
+    ],
+]
 ```
 
 ### <b>config/session.php</b>
