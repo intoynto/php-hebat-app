@@ -5,7 +5,7 @@ namespace Intoy\HebatApp\Renderer;
 
 use Throwable;
 use Intoy\HebatSupport\Str;
-use Intoy\HebatFactory\Renderer\Traits\TrackError;
+use Intoy\HebatApp\Renderer\Traits\TrackError;
 use Slim\Error\Renderers\JsonErrorRenderer as SlimJsonErrorRenderer;
 
 class JsonErrorRenderer extends SlimJsonErrorRenderer
