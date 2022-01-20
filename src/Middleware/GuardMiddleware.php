@@ -90,8 +90,8 @@ class GuardMiddleware implements MiddlewareInterface
 
 
     /**
-     * @param ServerRequestInterface $request*
-     * @return ServerRequestInterface*
+     * @param ServerRequestInterface $request
+     * @return ServerRequestInterface
      * @throws Exception
      */
     public function appendNewTokenToRequest(ServerRequestInterface $request): ServerRequestInterface

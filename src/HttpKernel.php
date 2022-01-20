@@ -106,26 +106,27 @@ class HttpKernel extends Kernel
         $mid=app()->addErrorMiddleware(!is_production(),true,true);
         return $mid;
     }
-	
-	
+
+    /**
+     * callable yang akan dipanggil 
+     * oleh app ketika akan menjalankan request
+     */
 	public function registerShutdownHandler(Request $request)
     {
-        return;
-        if($this->errorMiddleware)
+        $mid=$this->resolveErrorMilddleware();
+        $errorHandle=$mid->getDefaultErrorHandler();
+        if($errorHandle instanceof \Slim\Handlers\ErrorHandler)
         {
-            $errorHandle=$this->errorMiddleware->getDefaultErrorHandler();
-            if($errorHandle instanceof \Slim\Handlers\ErrorHandler)
-            {
-                $shutdownHandler=new ShutdownHandler($request, $errorHandle,!is_production());
-                register_shutdown_function($shutdownHandler);
-            }
+            $errorHandle->forceContentType('text/html');
+            $shutdownHandler=new ShutdownHandler($request, $errorHandle,!is_production());
+            register_shutdown_function($shutdownHandler);
         }
     }
 
     protected function onFinishSetup()
-    {
+    {        
         $mid=$this->resolveErrorMilddleware();
-        $errorHandle=$mid->getDefaultErrorHandler();
+        $errorHandle=$mid->getDefaultErrorHandler();        
         if($errorHandle instanceof \Slim\Handlers\ErrorHandler)
         {
             $contexts=[
@@ -145,7 +146,11 @@ class HttpKernel extends Kernel
             {
                 $errorHandle->registerErrorRenderer($contextType,$render);
             }
+
+            //set default error render
+            $errorHandle->setDefaultErrorRenderer("text/html",HtmlErrorRenderer::class);
         }
+        // add base path middleware
         app()->add(BasePathMiddleware::class);
     }
 }
