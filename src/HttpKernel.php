@@ -7,7 +7,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use Intoy\HebatFactory\Kernel;
-use Intoy\HebatFactory\Renderer\{HtmlErrorRenderer,JsonErrorRenderer};
+use Intoy\HebatApp\Renderer\{HtmlErrorRenderer,JsonErrorRenderer};
 
 use Intoy\HebatApp\Loaders\{
     LoaderSession,
