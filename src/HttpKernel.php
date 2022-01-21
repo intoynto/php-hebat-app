@@ -78,6 +78,13 @@ class HttpKernel extends Kernel
 
 
     /**
+     * varibale is registered shutdown handler
+     * @var bool
+     */
+    protected $isRegisteredShutdownHandler=false;
+
+
+    /**
      * @return LoggerInterface|null
      */
     protected function resolveLogger()
@@ -113,13 +120,19 @@ class HttpKernel extends Kernel
      */
 	public function registerShutdownHandler(Request $request)
     {
-        $mid=$this->resolveErrorMilddleware();
-        $errorHandle=$mid->getDefaultErrorHandler();
-        if($errorHandle instanceof \Slim\Handlers\ErrorHandler)
+        if($this->isRegisteredShutdownHandler || !$this->useShutdownHandler) return;
+
+        if($this->useShutdownHandler)
         {
-            $errorHandle->forceContentType('text/html');
-            $shutdownHandler=new ShutdownHandler($request, $errorHandle,!is_production());
-            register_shutdown_function($shutdownHandler);
+            $mid=$this->resolveErrorMilddleware();
+            $errorHandle=$mid->getDefaultErrorHandler();
+            if($errorHandle instanceof \Slim\Handlers\ErrorHandler)
+            {
+                $errorHandle->forceContentType('text/html');
+                $shutdownHandler=new ShutdownHandler($request, $errorHandle,!is_production());
+                register_shutdown_function($shutdownHandler);
+            }
+            $this->isRegisteredShutdownHandler=true;
         }
     }
 

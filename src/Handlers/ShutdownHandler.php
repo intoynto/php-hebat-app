@@ -67,6 +67,8 @@ class ShutdownHandler
                         break;
                 }
             }
+
+            write_log($message);
             $exception = new HttpInternalServerErrorException($this->request, $message);
             $response = $this->errorHandler->__invoke($this->request, $exception, $this->displayErrorDetails, false, false);
             
@@ -76,6 +78,7 @@ class ShutdownHandler
 
             $responseEmitter = new ResponseEmitter();
             $responseEmitter->emit($response);
+            die();
         }
     }
 }
