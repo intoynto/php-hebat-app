@@ -28,6 +28,24 @@ final class RequestPathRule implements RuleInterface
         $this->options = array_merge($this->options, $options);
     }
 
+    /**
+     * Determine if a given string starts with a given substring.
+     *
+     * @param  string  $fullString
+     * @param  string|string[]  $substr
+     * @return bool
+     */
+    protected static function startsWith($fullString, $substr)
+    {
+        foreach ((array) $substr as $needle)
+        {
+            if ((string) $needle !== '' && strncmp($fullString, $needle, strlen($needle)) === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Resolve path from basePath
@@ -36,15 +54,32 @@ final class RequestPathRule implements RuleInterface
     protected function prefixPathWithBasePath(string $path)
     {
         $basePath=AppFactory::$app?AppFactory::$app->getBasePath():"";
+        $origin_basePath=$basePath;  
+        $origin_path=$path;      
 
-        if($basePath)
-        {
-            $path=ltrim($path,$basePath);
-            $basePath=rtrim($basePath);
-            $path=rtrim($basePath,"/")."/".ltrim($path,"/");
-        }
+        if($basePath && $basePath!=="/")
+        {            
+            $basePath=ltrim(rtrim($basePath,"/"),"/");
+            $path=ltrim(rtrim($path,"/"),"/");
 
-        $path="/".ltrim($path,"/");
+            // check if path not assigned basepath
+            if(!static::startsWith($path,$basePath))
+            {
+                $path=$basePath."/".$path;
+            }
+
+            if(!static::startsWith($path,"/"))
+            {
+                $path="/".$path;
+            }
+            //$basePathInPath=static::startsWith($path,$basePath);
+            //if($basePathInPath){
+            //    $path=substr($path,strlen($basePath));
+            //    $path=ltrim(rtrim($path,"/"),"/");
+            //}
+        }          
+        
+
         return $path;
     }
 
@@ -52,6 +87,7 @@ final class RequestPathRule implements RuleInterface
     {
         $uri = "/" . $request->getUri()->getPath();
         $uri = preg_replace("#/+#", "/", $uri);
+        
         /**
          * Path harus relative terhadap web sub folder
          * Contoh misalnya path perlu pengecekan authentikasi adalah path "api"
@@ -60,11 +96,12 @@ final class RequestPathRule implements RuleInterface
          */
 
         /* If request path is matches ignore should not authenticate. */
+        
         foreach ((array)$this->options["ignore"] as $ignore) {
             $ignore = rtrim($ignore, "/");
 
             //if($ignore!=="/") { $ignore="/".ltrim($ignore,"/"); }
-            $ignore=$this->prefixPathWithBasePath($ignore);
+            $ignore=$this->prefixPathWithBasePath($ignore);            
 
             if (!!preg_match("@^{$ignore}(/.*)?$@", (string) $uri)) 
             {
@@ -72,14 +109,14 @@ final class RequestPathRule implements RuleInterface
             }
         }
 
-        /* Otherwise check if path matches and we should authenticate. */
-        foreach ((array)$this->options["path"] as $path) {
-            $path = rtrim($path, "/");
+        /* Otherwise check if path matches and we should authenticate. */        
+        foreach ((array)$this->options["path"] as $path) 
+        {
+            $path = rtrim($path, "/"); 
 
-            $path=$this->prefixPathWithBasePath($path);
-
+            $path=$this->prefixPathWithBasePath($path);              
             if (!!preg_match("@^{$path}(/.*)?$@", (string) $uri)) 
-            {               
+            {                   
                 return true;
             }
         }
