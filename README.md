@@ -127,6 +127,25 @@ return [
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci'   // for mysql
         ],
     ],
+
+    "oracle"=>[
+        'driver'        => 'oracle',
+        'tns'           => '',
+        'host'          => '192.168.90.201',
+        'port'          => '1521',
+        'database'      => 'sismiop_homestead',
+        'username'      => 'homestead_user',
+        'password'      => 'homestead_pass',
+        'charset'       => 'AL32UTF8',
+        'prefix'        => '',
+        'prefix_schema' => '',        
+        'options'       =>[
+            // Enable exceptions
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            // Set default fetch mode to object
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
+        ],
+    ],
 ];
 ```
 
