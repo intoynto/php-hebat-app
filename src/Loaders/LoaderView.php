@@ -16,22 +16,27 @@ class LoaderView extends Loader
         $callback=function()
         {
             $is_production=is_production();
-            $app=[
-                'name'=>config('app.name'),
-                'title'=>config('app.title'),
-                'instansi'=>config("app.instansi"),
-                'version'=>config("app.version"),
-                'is_production'=>$is_production,
-                'is_debug'=>!$is_production,
-                'path'=>url_base()
-            ];       
+            $config_app=config("app");
+
+            $app=[];
+            foreach(array_keys($config_app) as $key)
+            {
+                $value=data_get($config_app,$key);
+                if(!is_object($value))
+                {
+                    $app[$key]=$value;
+                }
+            }
+            $app["is_production"]=$is_production;
+            $app["is_debug"]=!$is_production;
+            $app["path"]=url_base();
 
             $twig_settings=config('twig.twig');
             $twig_path=config('twig.path');
             $loader=new FilesystemLoader($twig_path);
 
             $tw=new Twig($loader,$twig_settings);
-            $tw->getEnvironment()->addGlobal('app',(object)$app);
+            $tw->getEnvironment()->addGlobal('app',(object)$app); // assign in twig environment 
             $tw->addExtension(new TwigDebugExtension());            
             
             return $tw;
