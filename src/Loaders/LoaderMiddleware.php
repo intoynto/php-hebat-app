@@ -8,6 +8,9 @@ use Slim\Views\TwigMiddleware;
 use Slim\Middleware\ErrorMiddleware;
 use Intoy\HebatFactory\Loader;
 use Intoy\HebatApp\Middleware\GuardMiddleware;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
+use Psr\Http\Message\ResponseInterface as Response;
 
 class LoaderMiddleware extends Loader
 {
@@ -75,12 +78,72 @@ class LoaderMiddleware extends Loader
     {
         if($this->app->has(GuardMiddleware::class))
         {
-            $mid=$this->app->resolve(GuardMiddleware::class);
-            $mid->setFailurHandler(function()
+            $app=$this->app;
+            $getGuard=function() use($app):GuardMiddleware
             {
-                session()->flashSet(["Invalid Cross-site request forgeries."],"message");
+                return $app->resolve(GuardMiddleware::class);
+            };
+            $mid=$getGuard();
+
+            $determineContentType=function(Request $request)
+            {
+                $errorRenderers=[
+                    'application/json',
+                    'application/xml',
+                    'text/xml',
+                    'text/html',
+                    'text/plain',
+                ];
+                $acceptHeader = $request->getHeaderLine('Accept');
+                $selectedContentTypes = array_intersect(
+                    explode(',', $acceptHeader),
+                    $errorRenderers
+                );
+                $count = count($selectedContentTypes);
+
+                if ($count) {
+                    $current = current($selectedContentTypes);
+
+                    /**
+                     * Ensure other supported content types take precedence over text/plain
+                     * when multiple content types are provided via Accept header.
+                     */
+                    if ($current === 'text/plain' && $count > 1) {
+                        $next = next($selectedContentTypes);
+                        if (is_string($next)) {
+                            return $next;
+                        }
+                    }
+
+                    if (is_string($current)) {
+                        return $current;
+                    }
+                }
+
+                if (preg_match('/\+(json|xml)/', $acceptHeader, $matches)) {
+                    $mediaType = 'application/' . $matches[1];
+                    if (array_key_exists($mediaType, $this->errorRenderers)) {
+                        return $mediaType;
+                    }
+                }
+
+                return null;
+            };
+
+            $handlerFailure=function(Request $request, Handler $handler) use ($determineContentType) :Response 
+            {
+                $contentType=$determineContentType($request);
+                $isJson=in_array($contentType,['text/json','application/json']);
+                $msg="Invalid Cross-site request forgeries";
+                if($isJson)
+                {
+                    throw new \Slim\Exception\HttpForbiddenException($request,$msg);
+                }
+
+                session()->flashSet([$msg],"message");
                 return back();
-            });
+            };
+            $mid->setFailurHandler($handlerFailure);
         }
     }
 }
