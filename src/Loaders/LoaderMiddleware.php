@@ -8,6 +8,7 @@ use Slim\Views\TwigMiddleware;
 use Slim\Middleware\ErrorMiddleware;
 use Intoy\HebatFactory\Loader;
 use Intoy\HebatApp\Middleware\GuardMiddleware;
+use Intoy\HebatApp\Helper;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as Handler;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -24,18 +25,43 @@ class LoaderMiddleware extends Loader
 
     public function boot()
     {        
-        $this->prefix="web";
-
         $middleware=[
-            ...$this->kernel->middleware,
-            ...$this->kernel->middlewareGroups['web'],
+            ...$this->kernel->middleware,            
         ];
-        
-        
-        $all_middleware=array_filter($middleware,function($class){
-            return class_exists($class) || $class==='csrf';
-        });
 
+        $groupMiddleware=[
+            "global"=>[],
+        ];
+
+        $all_middleware=[];
+        
+        foreach($middleware as $class)
+        {
+            $true=class_exists($class) || $class==='csrf';
+            if($true)
+            {
+                $groupMiddleware["global"][]=$class;
+                $all_middleware[]=$class;
+            }
+        }
+
+        // looping middlewarGroup Kernel
+        foreach($this->kernel->middlewareGroups as $key => $mids)
+        {
+            foreach($mids as $class)
+            {
+                $true=class_exists($class) || $class==='csrf';
+                if($true)
+                {
+                    if(!in_array($key,array_keys($groupMiddleware)))
+                    {
+                        $groupMiddleware[$key]=[];
+                    }
+                    $groupMiddleware[$key][]=$class;
+                    $all_middleware[]=$class;
+                }
+            }
+        }
 
         foreach($all_middleware as $mid)
         {
@@ -65,13 +91,8 @@ class LoaderMiddleware extends Loader
             }  
             $this->app->bind($alias,$guard);
         }
-
         //Re-register in container
-        $this->app->bind('middleware',fn()=>[
-            'global'=>$this->kernel->middleware,
-            'api'=>$this->kernel->middlewareGroups['api'],
-            'web'=>$this->kernel->middlewareGroups['web'],
-        ]);
+        $this->app->bind('middleware',$groupMiddleware);
     }
 
     protected function afterBoot()
@@ -84,55 +105,9 @@ class LoaderMiddleware extends Loader
                 return $app->resolve(GuardMiddleware::class);
             };
             $mid=$getGuard();
-
-            $determineContentType=function(Request $request)
+            $handlerFailure=function(Request $request, Handler $handler) :Response 
             {
-                $errorRenderers=[
-                    'application/json',
-                    'application/xml',
-                    'text/xml',
-                    'text/html',
-                    'text/plain',
-                ];
-                $acceptHeader = $request->getHeaderLine('Accept');
-                $selectedContentTypes = array_intersect(
-                    explode(',', $acceptHeader),
-                    $errorRenderers
-                );
-                $count = count($selectedContentTypes);
-
-                if ($count) {
-                    $current = current($selectedContentTypes);
-
-                    /**
-                     * Ensure other supported content types take precedence over text/plain
-                     * when multiple content types are provided via Accept header.
-                     */
-                    if ($current === 'text/plain' && $count > 1) {
-                        $next = next($selectedContentTypes);
-                        if (is_string($next)) {
-                            return $next;
-                        }
-                    }
-
-                    if (is_string($current)) {
-                        return $current;
-                    }
-                }
-
-                if (preg_match('/\+(json|xml)/', $acceptHeader, $matches)) {
-                    $mediaType = 'application/' . $matches[1];
-                    if (array_key_exists($mediaType, $this->errorRenderers)) {
-                        return $mediaType;
-                    }
-                }
-
-                return null;
-            };
-
-            $handlerFailure=function(Request $request, Handler $handler) use ($determineContentType) :Response 
-            {
-                $contentType=$determineContentType($request);
+                $contentType=Helper::determineContentType($request);
                 $isJson=in_array($contentType,['text/json','application/json']);
                 $msg="Invalid Cross-site request forgeries";
                 if($isJson)

@@ -70,10 +70,11 @@ class RouteGroup
     public function routing()
     {
         $fileName=$this->fileName;
-        $configRouteName=$this->configRouteName;
-        $routeGroup=$this->app->group($this->groupPrefix,function(RouteCollectorProxyInterface $group) use ($fileName,$configRouteName){
+        $routeName=$this->configRouteName;
+        $pattern=$this->groupPrefix;
+        $routeGroup=$this->app->group($pattern,function(RouteCollectorProxyInterface $group) use ($fileName,$routeName,$pattern){
             Route::storeApp($group);
-            Route::storeConfigRouteName($configRouteName);
+            Route::storeConfigRouteName($routeName);
             require_once $fileName;
         });
 

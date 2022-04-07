@@ -6,23 +6,44 @@ namespace Intoy\HebatApp;
 
 final class ClassFinder
 {
-    private static $composer=null;
+    private static $files=null;
 
     public function __construct()
     {
-        self::$composer=null;
-        self::$composer=require path_base("vendor/autoload.php");
+        self::$files=null;
+        $file="vendor/composer/autoload_psr4.php";
+        $vendorFile=null;
+        $paths=[path_vendor($file),path_base($file)];
+        foreach($paths as $path)
+        {
+            if(file_exists($path))
+            {
+                $vendorFile=$path;
+                break;
+            }
+        }
+
+        if(!$vendorFile)
+        {
+            throw new \Exception("Can't resolve autoload from config vendor");
+        }
+        
+        self::$files=require $vendorFile;
     }
 
-    public function getComposer()
+    public function getFiles()
     {
-        return self::$composer;
+        return self::$files;
     }
 
 
     protected function splitNameSpace($nameSpace)
     {
         $split=explode("\\",$nameSpace);
+        if(\end($split)==="\\" || \end($split)==="")
+        {
+            array_pop($split);
+        }
         $main=array_shift($split);
         return [$main."\\",$split];
     }
@@ -37,11 +58,11 @@ final class ClassFinder
         if(!$prefixDirPsr4Key) return [];
 
         [$main,$subNameSpaceDirs]=$this->splitNameSpace($prefixDirPsr4Key);
-
-        $dir=array_shift(static::$composer->getPrefixesPsr4()[$main]);
-        $scanDir=$dir.DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR,$subNameSpaceDirs).DIRECTORY_SEPARATOR;
+        $files=static::$files;
+        $dir=array_shift($files[$main]);
         $joinNameSpace=implode("\\",$subNameSpaceDirs);
         $classes=[];
+        $scanDir=$dir.DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR,$subNameSpaceDirs).DIRECTORY_SEPARATOR;
         if(is_dir($scanDir))
         {
             $folder = scandir($scanDir);
@@ -55,6 +76,7 @@ final class ClassFinder
                 }
             }
         }
+
         return $classes;
     }
 }

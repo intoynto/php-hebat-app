@@ -38,30 +38,13 @@ class RouteContextMiddleware
         // register Redirect class untuk Redirect
         app()->bind(Redirect::class,fn()=>new Redirect(app()->resolve(Factory::class)));
 
-
-        $kernel=app()->getKernel();
         $requests=[];
-        array_filter(array_keys($kernel->middlewareGroups),function($p) use (&$requests) {
-            $requestConfig=config("requests.{$p}");
-            if(is_string($requestConfig))
-            {
-                $requests[]=$requestConfig;
-                return true;
-            }
-            elseif(is_array($requestConfig))
-            {
-                if(array_key_exists('namespace',$requestConfig))
-                {
-                    $cf=new ClassFinder();
-                    $requests=$cf->getClassesInNameSpaces($requestConfig["namespace"]);
-                    return true;
-                }
-                if(!empty($requestConfig)){
-                    array_push($requests,...$requestConfig);
-                    return true;
-                }
-            }            
-        });
+        $nameSpaceRequest=config("routes.request");
+        if($nameSpaceRequest)
+        {
+            $cf=new ClassFinder();
+            $requests=$cf->getClassesInNameSpaces($nameSpaceRequest);            
+        }
         
         $requests=array_values($requests);
         if(count($requests)>0)

@@ -109,20 +109,52 @@ class Route
 
     protected static function resolveNameSpaces(string $class)
     {
-        $key=static::$configRouteName?'.'.static::$configRouteName:'';
+        $key=static::$configRouteName;
 
-        $namespaces=config("routes.controllers{$key}"); 
+        $namespaces=config("routes.controllers"); 
+        $spase_key=data_get($namespaces,$key);
+        if($spase_key)
+        {
+            $namespaces=$spase_key;
+        }
+
+        if($namespaces && !is_array($namespaces))
+        {
+            $namespaces=[$namespaces];
+        }
 
         if($namespaces)
         {
-            foreach($namespaces as $namespace)
+            /**
+             * @param array $spaces
+             * @param string $target of className
+             * @param callable $next
+             * @return string|null
+             */
+            $resolveNameSpaces=function($spaces,$target,$next)
             {
-                if(class_exists($namespace.$class))
+                foreach($spaces as $key => $space)
                 {
-                    return $namespace;
+                    $to=$key;
+                    if(is_numeric($key))
+                    {
+                        $to=$space;
+                    }      
+
+                    if(is_array($to))
+                    {
+                        return $next($to,$target);
+                    }
+                    elseif(class_exists($to.$target))
+                    {
+                        return $to;
+                    }
                 }
-            }
+            };
+
+            return $resolveNameSpaces($namespaces,$class,$resolveNameSpaces);            
         }
+
         return null;
     }
 

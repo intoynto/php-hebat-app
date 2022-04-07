@@ -55,7 +55,7 @@ class EntryTokenParseJs extends AbstractTokenParser
         $manifestIndex = $entryName.'.js';
 
         if (!isset($manifest[$manifestIndex])) {
-            return new TextNode(sprintf('<!-- Webpack js entry "%s" file not exists. -->',$entryName), $token->getLine());
+            return new TextNode(sprintf('<!-- Webpack js entry "%s" file not exists, entry public "%s"-->',$entryName,$this->publicDir), $token->getLine());
         }
 
         $entryFile = $manifest[$manifestIndex];

@@ -4,7 +4,9 @@ declare (strict_types=1);
 namespace Intoy\HebatApp\Controllers;
 
 use Psr\Container\ContainerInterface as Container;
+use Psr\Http\Message\ResponseInterface as Response;
 use Intoy\HebatApp\InputFormRequest;
+use Slim\Views\Twig;
 
 class Controller {
     /**
@@ -28,6 +30,13 @@ class Controller {
     protected function resolveInput(string $class=InputFormRequest::class):InputFormRequest
     {
         return $this->container->get($class);
+    }
+
+
+    protected function view(Response $response, string $template, array $data=[]):Response
+    {
+        $response->getBody()->write($this->container->get(Twig::class)->fetch($template, $data));
+        return $response;
     }
 
     /**

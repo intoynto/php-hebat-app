@@ -11,6 +11,7 @@ use Intoy\HebatDatabase\QueryException;
 trait TrackError 
 {
     protected $errorPdoDefs=[
+        // postgres
         "P0001"=>"Database Exception.",
         "0B000"=>"Inisialisasi transaksi database tidak valid",
         "22P02"=>"Representation text invalid",
@@ -18,6 +19,9 @@ trait TrackError
         "23505"=>"Unique Violation. Attribut unik terduplikasi.",
         "42703"=>"Undefined Column. Kolom dalam entitas tabel tidak  terdefinisi.",
         "42883"=>"Undefined function. Nama fungsi / prosedur dan argumen tidak tersedia dalam database.",
+
+        // mysql
+        "23000"=>"Foreign key violation. Item masih terkait / berelasi atau terhubung dengan data lain.",
     ];
 
     /**

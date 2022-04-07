@@ -15,8 +15,13 @@ class LoaderProvider extends Loader
 
         $appProviders=config('app.providers');
 
-        $providers=[...$appProviders,RouteProvider::class];
-        
+        if($appProviders && is_array($appProviders)){
+            $providers=[...$appProviders,RouteProvider::class];
+        }
+        else {
+            $providers=[RouteProvider::class];
+        }
+        // boot setup provider        
         Provider::setup($app,$kernel,$providers);
     }
 }

@@ -31,7 +31,7 @@ class RouteProvider extends Provider
     /**
      * @return array
      */
-    protected function getPrefixFiles(string $prefix)
+    protected function scanFilesFromPrefix(string $prefix)
     {
         $config = [];
         $config_folder=path_routes();
@@ -53,52 +53,73 @@ class RouteProvider extends Provider
         return $config;
     }
 
-    public function apiRouteGroup()
-    {
-        $files=$this->getPrefixFiles('api');
-        sort($files);
-        $add=$this->resolve('middleware');
-        foreach($files as $file)
-        {
-            $filename=path_routes($file);
-            $routeGroup=$this->getRouteGroup();
-            $routeGroup
-                ->setFileName($filename)
-                ->setGroupPrefix('/api')
-                ->setConfigRouteName('api')
-                ->setMiddleware([
-                    ...$add['api'],
-                    ...$add['global']
-                ]);
-            $routeGroup->routing();        
-        }                
-    }
-
-
-    public function webRouteGroup()
-    {
-        $files=$this->getPrefixFiles('web');
-        sort($files);
-        $add=$this->resolve('middleware');
-        foreach($files as $file)
-        {
-            $filename=path_routes($file);
-            $routeGroup=$this->getRouteGroup();
-            $routeGroup
-                ->setFileName($filename)
-                ->setGroupPrefix('')
-                ->setConfigRouteName('web')
-                ->setMiddleware([
-                    ...$add['web'],
-                    ...$add['global']
-                ]);
-            $routeGroup->routing();        
-        }      
-    }
-
     protected function boot()
     {        
-        $this->apiRouteGroup();
-        $this->webRouteGroup();        
+        $prefixs=config("routes.prefix");
+        $keys=[];
+        $values=[];
+        $setups=[];
+        $empty_setup=null;
+
+        foreach($prefixs as $key => $value)
+        {
+            if(!in_array($key,$keys))
+            {
+                $files=$this->scanFilesFromPrefix($key);
+                sort($files);
+
+                $kernelMiddlewares=$this->app->has("middleware")
+                                   ?($this->app->resolve("middleware")??[])
+                                   :[];
+                $selfMiddleware=data_get($kernelMiddlewares,$key,[]);
+                $globalMiddleware=data_get($kernelMiddlewares,"global",[]);
+                $set=[
+                    "path"=>$value,
+                    "files"=>$files,
+                    "middlewares"=>[...$selfMiddleware, ...$globalMiddleware],
+                ];
+                if(empty($value) && !$empty_setup)
+                {
+                    $empty_setup=$set;
+                }                
+                $setups[$key]=$set;
+            }
+            $keys[]=$key;
+            $values[]=$value;
+        }
+
+        
+        foreach($setups as $key => $option)
+        {
+            $this->setupRouteGroup($key,$option["path"],$option["files"],$option["middlewares"]);
+        }              
+
+        if(!is_production())
+        {
+            $this->bind("native.providers",fn()=>$setups);
+        }
+    }
+
+
+    /**
+     * @param string $prefix
+     * @param string $routeGroup
+     * @param array $files
+     * @param array $middleware
+     */
+    protected function setupRouteGroup($prefix,$path,$files,$middlewares)
+    {
+        foreach($files as $file)
+        {
+            $filename=path_routes($file);
+            $routeGroup=$this->getRouteGroup();
+            
+            $routeGroup->setFileName($filename)
+                        ->setGroupPrefix($path)
+                        ->setConfigRouteName($prefix)
+                        ->setMiddleware($middlewares)
+                        ;
+            $routeGroup->routing();
+        }
     }
 }

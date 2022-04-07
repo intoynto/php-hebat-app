@@ -135,9 +135,12 @@ if(!function_exists('is_production')){
         else {
             $env=env("APP_ENV","production");
         }
-        return strtolower((string)$env)==="production";
+
+        $env=strtolower((string)$env);
+        return in_array($env,["production","prod"]);
     }
 }
+if(!function_exists('path_vendor')){    function path_vendor    ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }}
 if(!function_exists('path_base')){      function path_base      ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }}
 if(!function_exists('path_app')){       function path_app       ($path=''):string { return path_base("app".DIRECTORY_SEPARATOR."{$path}"); }}
 if(!function_exists('path_domain')){    function path_domain    ($path=''):string { return path_base("domain".DIRECTORY_SEPARATOR."{$path}"); }}

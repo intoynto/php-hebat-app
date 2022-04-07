@@ -15,6 +15,11 @@ class TwigHelperExtension extends AbstractExtension
         return 'hebat.twig.helper.extension';
     }
 
+    public function getPublic(string $path="")
+    {
+        return url_public($path);
+    }
+
     public function getAsset(string $path="")
     {
         return url_asset($path);
@@ -130,6 +135,7 @@ class TwigHelperExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
+            new TwigFunction('public',[$this,'getPublic']),
             new TwigFunction('asset',[$this,'getAsset']),
             new TwigFunction('full_asset',[$this,'getFullAsset']),
             new TwigFunction('nama_hari',[$this,'getNamaHari']),
