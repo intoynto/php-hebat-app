@@ -12,6 +12,7 @@ use RuntimeException;
 use SplStack;
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Server\RequestHandlerInterface as Handler;
@@ -220,11 +221,11 @@ class JWTMiddleware implements MiddlewareInterface
     private function decodeToken(string $token): array
     {
         try {
-            $decoded = JWT::decode(
-                $token,
-                $this->options["secret"],
-                (array) $this->options["algorithm"]
-            );
+            // Firebase jwt versi lama
+            //$decoded = JWT::decode($token,$this->options["secret"],(array) $this->options["algorithm"]);
+
+            // Firebase jwt versi baru
+            $decoded = JWT::decode($token,new Key($this->options["secret"],$this->options["algorithm"]));
             return (array) $decoded;
         } catch (Exception $exception) {
             throw $exception;
