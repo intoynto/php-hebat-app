@@ -225,7 +225,7 @@ class JWTMiddleware implements MiddlewareInterface
             //$decoded = JWT::decode($token,$this->options["secret"],(array) $this->options["algorithm"]);
 
             // Firebase jwt versi baru
-            $decoded = JWT::decode($token,new Key($this->options["secret"],$this->options["algorithm"]));
+            $decoded = JWT::decode($token,new Key($this->options["secret"],$this->options["algorithm"][0]));
             return (array) $decoded;
         } catch (Exception $exception) {
             throw $exception;
