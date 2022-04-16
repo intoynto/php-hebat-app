@@ -32,7 +32,7 @@ class TwigHelperMiddleware
         // webpack extension
         $extension=new WebpackExtension(
             /// Realpath manifest file
-            path_asset("manifest.json"),
+            path_assets("manifest.json"),
             
             // url_base
             url_base(),
