@@ -140,13 +140,53 @@ if(!function_exists('is_production')){
         return in_array($env,["production","prod"]);
     }
 }
+/**
+ * real path base_path access vendor dir
+ * for RouteContextMiddleware
+ */
 if(!function_exists('path_vendor')){    function path_vendor    ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }}
+
+/**
+ * real path document root or sub_folder
+ */
 if(!function_exists('path_base')){      function path_base      ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }}
+
+/** 
+ * real path document root or sub_folder for app folder
+ */
 if(!function_exists('path_app')){       function path_app       ($path=''):string { return path_base("app".DIRECTORY_SEPARATOR."{$path}"); }}
-if(!function_exists('path_domain')){    function path_domain    ($path=''):string { return path_base("domain".DIRECTORY_SEPARATOR."{$path}"); }}
-if(!function_exists('path_config')){    function path_config    ($path=''):string { return path_domain("config".DIRECTORY_SEPARATOR."{$path}"); }}
-if(!function_exists('path_routes')){    function path_routes    ($path=''):string { return path_domain("routing".DIRECTORY_SEPARATOR."{$path}"); }}
-if(!function_exists('path_view')){      function path_view      ($path=''):string { return path_domain("views".DIRECTORY_SEPARATOR."{$path}"); }}
+
+/**
+ * real path for public directory 
+ * access for asset etc,..
+ */
+if(!function_exists('path_public')){    function path_public    ($path=''):string { return path_app("public".DIRECTORY_SEPARATOR."{$path}"); }}
+
+/**
+ * real path for assets directory 
+ * access for manifest.json etc,..
+ * for TwigHelperMiddleware
+ */
+if(!function_exists('path_assets')){    function path_assets    ($path=''):string { return path_public("assets".DIRECTORY_SEPARATOR."{$path}"); }}
+
+
+/**
+ * real path for folder config
+ * access for loader config
+ */
+if(!function_exists('path_config')){    function path_config    ($path=''):string { return path_app("config".DIRECTORY_SEPARATOR."{$path}"); }}
+
+/**
+ * real path for forder routes
+ * access for route context
+ */
+if(!function_exists('path_routes')){    function path_routes    ($path=''):string { return path_app("routing".DIRECTORY_SEPARATOR."{$path}"); }}
+
+/**
+ * real path for view
+ * access for template engine
+ */
+if(!function_exists('path_view')){      function path_view      ($path=''):string { return path_app("views".DIRECTORY_SEPARATOR."{$path}"); }}
 
 
 if(!function_exists('url_base'))

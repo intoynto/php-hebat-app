@@ -32,8 +32,8 @@ class TwigHelperMiddleware
         // webpack extension
         $extension=new WebpackExtension(
             /// Realpath manifest file
-            path_base('public/assets').DIRECTORY_SEPARATOR."manifest.json",
-
+            path_asset("manifest.json"),
+            
             // url_base
             url_base(),
         );
