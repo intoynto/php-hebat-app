@@ -29,15 +29,19 @@ return [
     'name'=>'App',
 
     /**
-     * Application title
+     * Application Instance
      */
-    'instansi'=>'Hebat Corporation',
+    'instance'=>'Hebat Corporation',
 
     /**
      * Application title
      */
     'title'=>'App - Hebat Corporation',
 
+    /**
+     * Application description
+     */
+    'description'=>'Application Hebat Corporation',
 
     /**
      * Application version
@@ -46,15 +50,9 @@ return [
 
     /**
      * Development Build
-     * development | production
+     * development | dev | production  | prod
      */
-    'env'=>'development',
-
-    /**
-     * Nama cookie untuk jwt yang akan di bind ke cookie browser
-     */
-    "jwt_cookie"=>\App\TokenJwt::JWT_COOKIE,
-
+    'env'=>'dev',    
 
     /**
      * Cors allow origin
@@ -147,41 +145,6 @@ return [
         ],
     ],
 ];
-```
-
-
-### <b>config/requests.php</b>
-Konfigurasi untuk namespace atau file-file request bind.
-Contoh script <b>requests.php</b>
-
-```php
-<?php
-
-return [
-    "web"=>[
-        "namespace"=>"App\\Requests",
-    ],
-    "api"=>[
-        "namespace"=>"App\\Requests",
-    ],
-];
-```
-
-contoh jika menggunakan array configurasi request :
-```php
-<?php
-
-return [
-    "web"=>[
-        "namespace"=>"App\\Requests",
-    ],
-    "api"=>[
-        "namespace"=>"App\\Requests",
-    ],
-];
-```
-namespace hanya alias untuk loader mencari request class yang sesuai ketika Container ketika harus mencari class yang dituju
-
 
 ### <b>config/twig.php</b>
 Contoh script configurasi untuk twig
@@ -212,22 +175,40 @@ Contoh konfigurasi routing :
 use App\TokenJwt;
 
 return [
-    'controllers'=>[
-        'web'=>[
-            '\\App\\Controllers\\',
-        ],
-        'api'=>[
-            '\\App\\Controllers\\',
-        ],
+    // array route groups
+    // [key,path] 
+    // key adalah key pada kernel middlewareGroups
+    // path ada path group pada route group $app->group($path);
+    // key juga akan di require pada folder Routing sesuai dengan key contoh : web.**.php;
+    "prefix"=>[
+        "web"=>"",
+        "api"=>"/api",
+        "xall"=>"", // aliasing after
     ],
-    'path'=>[
-        'api'=>'',
-        'web'=>'',
-    ],
-    'prefix'=>[
-        'api'=>'/api',
-        'web'=>'',
-    ],
+
+    // Psr-4 untuk namespace request
+    "request"=>"App\\Requests\\",
+
+    // Psr-4 untuk namespace Controllers
+    // Anda bisa menggunakan namespace berupa array, dengan catatan key array harus sesuai dengan key prefix
+    // Contoh 
+    // "controllers"=>[
+    //     "web"=>"App\\WebControllers\\"
+    //     "api"=>"App\\ApiControllers\\"
+    //     "test"=>"App\\TestControllers\\"
+    // ],
+
+    // atau bisa juga menggunnakan array array  
+    // "controllers"=>[
+    //     "web"=>[
+    //              "App\\WebControllers\\"
+    //              "App\\Web2Controllers\\"
+    //            ],
+    //     "api"=>"App\\ApiControllers\\"
+    //     "test"=>"App\\TestControllers\\"
+    // ],    
+    "controllers"=>"App\\Controllers\\",
+    
     // attribut yang akan diextract oleh middleware yang akan di bind ke parameter queryParams atau parseBody
     "jwt_apply_params"=>[
         "tahun",
