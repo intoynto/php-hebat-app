@@ -140,25 +140,31 @@ if(!function_exists('is_production')){
         return in_array($env,["production","prod"]);
     }
 }
-/**
- * real path base_path access vendor dir
- * for RouteContextMiddleware
- */
-if(!function_exists('path_vendor')){    function path_vendor    ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }}
 
 /**
- * real path document root or sub_folder
+ * real path untuk folder root untuk website 
  */
 if(!function_exists('path_base')){      function path_base      ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }}
 
+
+/**
+ * real path directory vendor autoload
+ * jika struktur folder vendor autoload : "htdocs/vendor"
+ * maka path_vendor adalah "htdocs" bukan absolute merujuk langsung ke folder vendor-nya
+ * RouteContextMiddleware akan mengakses route context melalu class finder disini
+ */
+if(!function_exists('path_vendor')){    function path_vendor    ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }}
+
+
 /** 
- * real path document root or sub_folder for app folder
+ * real path name space "App"
  */
 if(!function_exists('path_app')){       function path_app       ($path=''):string { return path_base("app".DIRECTORY_SEPARATOR."{$path}"); }}
 
 /**
  * real path for public directory 
- * access for asset etc,..
+ * yang biasanya berisi file atau folder assets, images etc,..
+ * yang bisa diakses secara publik melalu browser
  */
 if(!function_exists('path_public')){    function path_public    ($path=''):string { return path_app("public".DIRECTORY_SEPARATOR."{$path}"); }}
 
@@ -189,6 +195,9 @@ if(!function_exists('path_routes')){    function path_routes    ($path=''):strin
 if(!function_exists('path_view')){      function path_view      ($path=''):string { return path_app("views".DIRECTORY_SEPARATOR."{$path}"); }}
 
 
+/**
+ * twig function resolvable
+ */
 if(!function_exists('url_base'))
  {
     /**
@@ -202,9 +211,21 @@ if(!function_exists('url_base'))
     }
 }
 
+/**
+ * twig function resolvable
+ */
 if(!function_exists('url_public')){   function url_public   ($path=''):string { return url_base("public/{$path}"); }}
+
+
+/**
+ * twig function resolvable
+ */
 if(!function_exists('url_asset')){    function url_asset    ($path=''):string { return url_public("assets/{$path}"); }}
 
+
+/**
+ * twig function resolvable
+ */
 if(!function_exists('full_url'))
 {
     /**
@@ -220,6 +241,10 @@ if(!function_exists('full_url'))
     }
 }
 
+
+/**
+ * twig function resolvable
+ */
 if(!function_exists('full_url_asset'))
 {
     /**
