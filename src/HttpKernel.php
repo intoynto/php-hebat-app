@@ -42,8 +42,8 @@ class HttpKernel extends Kernel
      * @var string[]
      */
     public $loaders=[
-        LoaderSession::class,
         LoaderConfig::class,
+        LoaderSession::class,
         LoaderDatabase::class,
         LoaderLogger::class,
         LoaderView::class,

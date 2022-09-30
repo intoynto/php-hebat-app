@@ -12,8 +12,11 @@ class LoaderSession extends Loader
 {
     public function boot()
     {
-        $fn=new Session();       
-        $fn->start();
+        $fn=new Session();  
+        // custom session in php     
+        $fn->setOptions(config("session")); // parameter session php
+        $fn->start(); // start new session
+        
         $this->app->bind(Session::class,$fn);
         $this->app->bind('session',$fn); // alias */
 
