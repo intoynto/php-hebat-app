@@ -11,6 +11,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Intoy\HebatApp\Session;
 
 /**
+ * Callable function
+ * =============================
  * throw_when
  * dd (die dump)
  * class_name
@@ -34,6 +36,8 @@ use Intoy\HebatApp\Session;
  * redirect
  * redirectFor
  * back
+ * response
+ * responseJson
  
  * session
  * connection
@@ -312,6 +316,46 @@ if(!function_exists('back'))
         $route=app()->resolve(InputRequest::class);
         $back=$route->getCurrentUri();        
         return redirect($back);
+    }
+}
+
+/** response */
+if(!function_exists('response'))
+{
+  /**
+     * Create a new response.
+     * ===================== 
+     * @param int $code HTTP status code; defaults to 200
+     * @param string $reasonPhrase Reason phrase to associate with status code
+     *     in generated response; if none is provided implementations MAY use
+     *     the defaults as suggested in the HTTP specification.
+     *
+     * @return ResponseInterface
+     */
+    function response(int $code = 200, string $reasonPhrase = '')
+    {
+        return app()->getResponseFactory()->createResponse($code,$reasonPhrase);
+    }
+}
+
+/** responseJson */
+if(!function_exists('responseJson'))
+{
+    /**
+     * Create a new response.
+     *
+     * @param mixed 
+     * @param int $code HTTP status code; defaults to 200
+     * @param string $reasonPhrase Reason phrase to associate with status code
+     *     in generated response; if none is provided implementations MAY use
+     *     the defaults as suggested in the HTTP specification.   
+     * @return ResponseInterface
+     */
+    function responseJson($data=null, int $code = 200, string $reasonPhrase = '')
+    {
+        $res=app()->getResponseFactory()->createResponse($code, $reasonPhrase);
+        $res->getBody()->write(json_encode($data));
+        return $res->withHeader("content-type","application/json");
     }
 }
 

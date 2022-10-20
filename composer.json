@@ -1,5 +1,6 @@
 {
     "name": "intoy/hebat-app",
+    "description": "Base HomeStead PHP App",
     "license": "MIT",
     "autoload": {
         "psr-4": {
