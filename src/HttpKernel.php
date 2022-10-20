@@ -68,9 +68,9 @@ class HttpKernel extends Kernel
  */
     public $loaders=[
         LoaderConfig::class,
+        LoaderLogger::class,
         LoaderSession::class,
         LoaderDatabase::class,
-        LoaderLogger::class,
         LoaderView::class,
         LoaderMiddleware::class,
         LoaderProvider::class,

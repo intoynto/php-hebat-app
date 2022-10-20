@@ -18,7 +18,7 @@ class LoaderSession extends Loader
         $fn->start(); // start new session
         
         $this->app->bind(Session::class,$fn);
-        $this->app->bind('session',$fn); // alias */
+        $this->app->bind('session',$fn); // alias
 
         $this->app->bind(Guard::class,function(ContainerInterface $container)
         {

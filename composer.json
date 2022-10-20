@@ -22,8 +22,8 @@
         "firebase/php-jwt": "^6.1",
         "dflydev/fig-cookies": "^3.0",
         "slim/twig-view": "^3.3",
-        "intoy/hebat-validation": "^0.1.1",
-        "intoy/hebat-database": "^0.1.9",
-        "intoy/hebat-factory": "^0.1.1"
+        "intoy/hebat-factory": "^0.1.1",
+        "intoy/hebat-database": "^0.2.0",
+        "intoy/hebat-validation": "^0.1.2"
     }
 }
