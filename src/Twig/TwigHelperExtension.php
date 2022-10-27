@@ -6,9 +6,20 @@ use DateTime;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use Intoy\HebatFactory\Foundation\Guard;
+use Psr\Http\Message\UriInterface;
+
 
 class TwigHelperExtension extends AbstractExtension
 {
+    protected UriInterface $uri;
+    /**
+     * @param UriInterface         $uri         Uri
+     * @param string               $basePath    Base path
+     */
+    public function __construct(UriInterface $uri)
+    {
+        $this->uri=$uri;
+    }
 
     public function getName()
     {
@@ -130,6 +141,36 @@ class TwigHelperExtension extends AbstractExtension
     }
 
     /**
+     * Try get route by routeName
+     */
+    public function tryUrlFor(string $routeName, array $data = [], array $queryParams = [])
+    {
+        try
+        {
+            return app()->getRouteCollector()->getRouteParser()->urlFor($routeName,$data,$queryParams);
+        }
+        catch(\Exception $e)
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Try get full route by routeName
+     */
+    public function tryFullUrlFor(string $routeName, array $data = [], array $queryParams = [])
+    {
+        try
+        {
+            return app()->getRouteCollector()->getRouteParser()->fullUrlFor($this->uri,$routeName,$data,$queryParams);
+        }
+        catch(\Exception $e)
+        {
+            return null;
+        }
+    }
+
+    /**
      * @return TwigFunction[]
      */
     public function getFunctions()
@@ -141,6 +182,8 @@ class TwigHelperExtension extends AbstractExtension
             new TwigFunction('nama_hari',[$this,'getNamaHari']),
             new TwigFunction('format_tanggal',[$this,'getFormatTanggal']),
             new TwigFunction('guard',[$this,'generateGuard']),
+            new TwigFunction('try_url_for',[$this,'tryUrlFor']),            
+            new TwigFunction('try_full_url_for',[$this,'tryFullUrlFor']),            
         ];
     }    
 }

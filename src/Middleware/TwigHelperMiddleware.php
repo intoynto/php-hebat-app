@@ -24,7 +24,7 @@ class TwigHelperMiddleware
         $twig->getEnvironment()->addGlobal("route_name",$route?$route->getName():"");
 
         // global helper extension
-        $twig->addExtension(new TwigHelperExtension());
+        $twig->addExtension(new TwigHelperExtension($request->getUri()));
         
         // add string extension
         $twig->addExtension(new TwigStringExtension());
