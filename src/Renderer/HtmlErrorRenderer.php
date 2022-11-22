@@ -16,12 +16,10 @@ use Slim\Exception\{
 };
 
 class HtmlErrorRenderer extends SlimHtmlErrorRenderer
-{
-    /**
-     * @var string
-     */
-    protected $defaultErrorTitle = 'Application Error';
-
+{   
+    protected string $defaultErrorTitle = 'Application Error';
+    
+    protected string $defaultErrorDescription = 'A website error has occurred. Sorry for the temporary inconvenience.';
 
     protected function resolveApplicationTitle():string
     {

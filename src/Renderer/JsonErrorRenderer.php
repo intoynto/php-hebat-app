@@ -11,12 +11,8 @@ use Slim\Error\Renderers\JsonErrorRenderer as SlimJsonErrorRenderer;
 class JsonErrorRenderer extends SlimJsonErrorRenderer
 {
     use TrackError;
-
-    /**
-     * @var string
-     */
-    protected $defaultErrorTitle = 'Application Error';
     
+    protected string $defaultErrorTitle = 'Application Error';    
     
     protected function resolveApplicationTitle():string
     {
