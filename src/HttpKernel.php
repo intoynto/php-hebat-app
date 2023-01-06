@@ -50,11 +50,11 @@ use Slim\Middleware\{BodyParsingMiddleware as SlimBodyParsingMiddleware,ErrorMid
  * 1. A
  * 2. B
  * 3. C
- * Proses request akan melewati middleware A, kemudian middleware B, middleware C, lanjut sampai ke aplikasi inti.
+ * Proses request akan melewati middleware C, kemudian middleware B, middleware A, lanjut sampai ke aplikasi inti.
  * Aplikasi inti akan memproses Request dan mengembalikan Response.
- * Objek Response yang dihasilkan oleh aplikasi inti, akan melewati middleware C, kemudian middleware B, terakhir middleware A, 
+ * Objek Response yang dihasilkan oleh aplikasi inti, akan melewati middleware A, kemudian middleware B, terakhir middleware C, 
  * sampai akhirnya object Response diserialisasi menjadi Response HTTP mentah untuk client HTTP.
- * Middleware A adalah bagian terluar, Middleware C adalah middleware bagian terdalam.
+ * Middleware A adalah bagian terdalam, Middleware C adalah middleware bagian terluar.
  * 
  * Untuk lebih lengkapnya lihat :
  * https://www.slimframework.com/docs/v4/concepts/middleware.html 
@@ -80,11 +80,11 @@ class HttpKernel extends Kernel
      * {@inheritdoc}
      */
     public array $middleware=[
+        CorsMiddleware::class,
+        RouteContextMiddleware::class, //register tracking input
+        SlimBodyParsingMiddleware::class,
         SessionMiddleware::class, //start first for session  
         TrailingSlashMiddleware::class, // redirect trailing slash
-        CorsMiddleware::class,
-        SlimBodyParsingMiddleware::class,
-        RouteContextMiddleware::class, //register tracking input
     ];
     
     /**
@@ -92,9 +92,9 @@ class HttpKernel extends Kernel
      */
     public array $middlewareGroups=[
         'web'=>[
-            GuardMiddleware::class,            
-            \Slim\Views\TwigMiddleware::class, //default slim Twig middleware runtime extension
             TwigHelperMiddleware::class, // global var and Wbpack Extension  
+            \Slim\Views\TwigMiddleware::class, //default slim Twig middleware runtime extension
+            GuardMiddleware::class,            
         ],
         'api'=>[
            JWTMiddleware::class,

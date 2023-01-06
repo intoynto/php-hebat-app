@@ -54,7 +54,6 @@ class Session extends BaseSession
         if($validator->failed())
         {
             $this->flashSet($validator->getNotValidData(),"error");
-            $this->save();
         }
         
         return $validator;
