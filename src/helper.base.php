@@ -63,7 +63,9 @@ if(!function_exists('dd')){
         $simfony_dumper="Symfony\Component\VarDumper\VarDumper";
         if(class_exists($simfony_dumper))
         {
-            call_user_func_array($simfony_dumper."::dump",func_get_args());
+            array_map(function($content) use ($simfony_dumper){
+                call_user_func_array($simfony_dumper."::dump",[$content]);
+            },func_get_args());
             exit(1);            
         }
         array_map(function ($content) {
