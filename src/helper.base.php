@@ -56,13 +56,23 @@ if(!function_exists('throw_when'))
 if(!function_exists('dd')){
     function dd()
     {
+        if (!in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) && !headers_sent()) {
+            header('HTTP/1.1 500 Internal Server Error');
+        }
+
+        $simfony_dumper="Symfony\Component\VarDumper\VarDumper";
+        if(class_exists($simfony_dumper))
+        {
+            call_user_func_array($simfony_dumper."::dump",func_get_args());
+            exit(1);            
+        }
         array_map(function ($content) {
             echo "<pre>";
             var_dump($content);
             echo "</pre>";
             echo "<hr>";
         }, func_get_args());
-        die;
+        exit(1);
     }
 }
 
