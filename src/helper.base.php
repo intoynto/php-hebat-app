@@ -22,14 +22,18 @@ use Intoy\HebatApp\Session;
  * config
  * is_production
  * path_base
+ * path_vendor
  * path_app
- * path_domain
+ * path_public
+ * path_assets
  * path_config
  * path_routes
+ * path_view
   
  * url_base
+ * url_public
  * url_asset
- * full_asset
+ * full_url
  * full_url_asset
   
  * routeFor
@@ -160,7 +164,14 @@ if(!function_exists('is_production')){
 /**
  * real path untuk folder root untuk website 
  */
-if(!function_exists('path_base')){      function path_base      ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }}
+if(!function_exists('path_base')){  
+    /**
+     * Get real path base of App Win/Linux directory of server machine
+     * @param string $path
+     * @return string
+     */
+    function path_base ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }
+}
 
 
 /**
@@ -169,46 +180,95 @@ if(!function_exists('path_base')){      function path_base      ($path=''){ retu
  * maka path_vendor adalah "htdocs" bukan absolute merujuk langsung ke folder vendor-nya
  * RouteContextMiddleware akan mengakses route context melalu class finder disini
  */
-if(!function_exists('path_vendor')){    function path_vendor    ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }}
+if(!function_exists('path_vendor')){    
+    /**
+     * Get real real path "vendor" dir of App Win/Linux directory of server machine
+     * @param string $path
+     * @return string
+     */
+    function path_vendor ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }
+}
 
 
 /** 
  * real path name space "App"
  */
-if(!function_exists('path_app')){       function path_app       ($path=''):string { return path_base("app".DIRECTORY_SEPARATOR."{$path}"); }}
+if(!function_exists('path_app')){       
+    /**
+     * Get real path of "app" dir of App Win/Linux directory of server machine
+     * @param string $path
+     * @return string
+     */
+    function path_app ($path=''):string { return path_base("app".DIRECTORY_SEPARATOR."{$path}"); }
+}
 
 /**
  * real path for public directory 
  * yang biasanya berisi file atau folder assets, images etc,..
  * yang bisa diakses secara publik melalu browser
  */
-if(!function_exists('path_public')){    function path_public    ($path=''):string { return path_app("public".DIRECTORY_SEPARATOR."{$path}"); }}
+if(!function_exists('path_public')){   
+     /**
+     * Get real "public" path dir of App Win/Linux directory of server machine
+     * @param string $path
+     * @return string
+     */ 
+    function path_public ($path=''):string { return path_app("public".DIRECTORY_SEPARATOR."{$path}"); }
+}
 
 /**
  * real path for assets directory 
  * access for manifest.json etc,..
  * for TwigHelperMiddleware
  */
-if(!function_exists('path_assets')){    function path_assets    ($path=''):string { return path_public("assets".DIRECTORY_SEPARATOR."{$path}"); }}
+if(!function_exists('path_assets')){  
+    /**
+     * Get real "assets" path dir of App Win/Linux directory of server machine
+     * @param string $path
+     * @return string
+     */   
+    function path_assets ($path=''):string { return path_public("assets".DIRECTORY_SEPARATOR."{$path}"); }
+}
 
 
 /**
  * real path for folder config
  * access for loader config
  */
-if(!function_exists('path_config')){    function path_config    ($path=''):string { return path_app("config".DIRECTORY_SEPARATOR."{$path}"); }}
+if(!function_exists('path_config')){    
+    /**
+     * Get real "config" path dir of config app Win/Linux directory of server machine
+     * @param string $path
+     * @return string
+     */   
+    function path_config ($path=''):string { return path_app("config".DIRECTORY_SEPARATOR."{$path}"); }
+}
 
 /**
  * real path for forder routes
  * access for route context
  */
-if(!function_exists('path_routes')){    function path_routes    ($path=''):string { return path_app("routing".DIRECTORY_SEPARATOR."{$path}"); }}
+if(!function_exists('path_routes')){ 
+    /**
+     * Get real "routes" path dir of routes app Win/Linux directory of server machine
+     * @param string $path
+     * @return string
+     */     
+    function path_routes ($path=''):string { return path_app("routing".DIRECTORY_SEPARATOR."{$path}"); }
+}
 
 /**
  * real path for view
  * access for template engine
  */
-if(!function_exists('path_view')){      function path_view      ($path=''):string { return path_app("views".DIRECTORY_SEPARATOR."{$path}"); }}
+if(!function_exists('path_view')){      
+    /**
+     * Get real "views" path dir of view template engine Win/Linux directory of server machine
+     * @param string $path
+     * @return string
+     */   
+    function path_view ($path=''):string { return path_app("views".DIRECTORY_SEPARATOR."{$path}"); }
+}
 
 
 /**
@@ -218,7 +278,7 @@ if(!function_exists('url_base'))
  {
     /**
      * Relative url
-     * Url base berpengaruh pada cookie
+     * @param string $path
      * @return string
      */
     function url_base($path = '')
@@ -230,13 +290,28 @@ if(!function_exists('url_base'))
 /**
  * twig function resolvable
  */
-if(!function_exists('url_public')){   function url_public   ($path=''):string { return url_base("public/{$path}"); }}
+if(!function_exists('url_public'))
+{   
+    /**
+     * Relative url public client browser
+     * @param string $path
+     * @return string
+     */
+    function url_public ($path=''):string { return url_base("public/{$path}"); }
+}
 
 
 /**
  * twig function resolvable
  */
-if(!function_exists('url_asset')){    function url_asset    ($path=''):string { return url_public("assets/{$path}"); }}
+if(!function_exists('url_asset')){    
+    /**
+     * Relative url assets client browser
+     * @param string $path
+     * @return string
+     */
+    function url_asset ($path=''):string { return url_public("assets/{$path}"); }
+}
 
 
 /**
@@ -245,15 +320,43 @@ if(!function_exists('url_asset')){    function url_asset    ($path=''):string { 
 if(!function_exists('full_url'))
 {
     /**
-     * Full url asset
+     * Full url client browser
      * @param string $path
      * @return string 
      */
     function full_url($path='')
     {       
-        $url=env("APP_URL","/");
-        $url=rtrim($url,"/");
-        return "{$url}/{$path}";
+        $url="";
+        // resolve from config if exists "base_url"
+        if(app()->has("config"))
+        {
+            $url=config("app.base_url");
+            if($url)
+            {
+            $url=trim((string)$url);
+            $url=rtrim($url,"/");
+            return "{$url}/{$path}";
+            }
+        }
+
+        // resolve from route context
+        if(app()->has(InputRequest::class))
+        {
+            //solve from route home name
+            $input=app()->resolve(InputRequest::class);
+            $parser=app()->getRouteCollector()->getRouteParser();
+            $url=$parser->fullUrlFor($input->getCurrentUri(),"home");
+            $url=rtrim($url,"/");
+            return "{$url}/{$path}";
+        }
+
+        // full empty
+        if($path)
+        {
+            $path=ltrim($path,"/");
+        }
+
+        return $path;
     }
 }
 
@@ -278,8 +381,9 @@ if(!function_exists('full_url_asset'))
 if(!function_exists('routeFor'))
 {
     /**
-     * Callbac Get route by route name / alias
-     * @return string $routeName
+     * Callback Get route by route name / alias
+     * Return string by route name
+     * @return string
      */
     function routeFor(string $routeName, array $data = [], array $queryParams = [])
     {        
@@ -291,7 +395,7 @@ if(!function_exists('routeFor'))
 if(!function_exists('redirect'))
 {
     /**
-     * Callbac Redirect
+     * Callbac Redirect. Return : \Psr\Http\Message\ResponseInterface 
      * @param string $to
      * @return Response
      */
@@ -342,7 +446,7 @@ if(!function_exists('response'))
      *     in generated response; if none is provided implementations MAY use
      *     the defaults as suggested in the HTTP specification.
      *
-     * @return ResponseInterface
+     * @return Response
      */
     function response(int $code = 200, string $reasonPhrase = '')
     {
@@ -361,7 +465,7 @@ if(!function_exists('responseJson'))
      * @param string $reasonPhrase Reason phrase to associate with status code
      *     in generated response; if none is provided implementations MAY use
      *     the defaults as suggested in the HTTP specification.   
-     * @return ResponseInterface
+     * @return Response
      */
     function responseJson($data=null, int $code = 200, string $reasonPhrase = '')
     {
