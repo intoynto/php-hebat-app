@@ -24,9 +24,10 @@ class Helper
     }
 
     /**
+     * @param Request $request
      * @return string|null
      */
-    public static function determineContentType(Request $request)
+    public static function determineContentType($request)
     {
         $contents=[
             'application/json',
@@ -69,5 +70,15 @@ class Helper
         }
 
         return null;
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    public static function determineContentJson($request)
+    {
+        $content_type=Helper::determineContentType($request);
+        return in_array($content_type,["text/json","application/json"]);
     }
 }

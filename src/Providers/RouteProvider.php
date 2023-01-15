@@ -96,7 +96,7 @@ class RouteProvider extends Provider
 
         if(!is_production())
         {
-            $this->bind("native.providers",fn()=>$setups);
+            $this->bind("native.routeGroups",fn()=>$setups);
         }
     }
 
