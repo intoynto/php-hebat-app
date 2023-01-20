@@ -10,13 +10,13 @@ use Intoy\HebatFactory\Kernel;
 use Intoy\HebatApp\Renderer\{HtmlErrorRenderer,JsonErrorRenderer};
 
 use Intoy\HebatApp\Loaders\{
-    LoaderSession,
     LoaderConfig,
-    LoaderDatabase,
     LoaderLogger,
+    LoaderSession,
+    LoaderDatabase,
+    LoaderView,
     LoaderMiddleware,
     LoaderProvider,
-    LoaderView,
 };
 
 use Intoy\HebatApp\JWTMiddleware\JWTMiddleware;
