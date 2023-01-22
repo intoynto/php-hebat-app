@@ -62,6 +62,16 @@ if(!function_exists('dd')){
     {
         if (!in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) && !headers_sent()) {
             header('HTTP/1.1 500 Internal Server Error');
+
+            $cors_origin=config("app.cors_origin");
+            $is_global_origin=$cors_origin==="*" || !is_production();
+            
+            if($is_global_origin)
+            {
+                // set origin cors flight
+                header("Access-Control-Allow-Origin:*");
+                header('Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS');
+            }
         }
 
         $simfony_dumper="Symfony\Component\VarDumper\VarDumper";
