@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Intoy\HebatApp;
 
 use Intoy\HebatFactory\InputRequest;
-use Intoy\HebatSupport\Validation\Validator;
+use Intoy\HebatSupport\Validation\{
+    Validation,
+};
 
 class InputFormRequest extends InputRequest
 {
     /**
      * Validator
-     * @var Validator
+     * @var Validation
      */
     protected $validator;
 
@@ -76,7 +78,8 @@ class InputFormRequest extends InputRequest
     {
         if($this->validator && $this->validator->failed())
         {
-            $errors=array_values($this->validator->getNotValidData());  
+            $errorValues=$this->validator->errors()->firstOfAll();
+            $errors=array_values($errorValues);  
             $info=(string)array_shift($errors);
             return $info;
         }

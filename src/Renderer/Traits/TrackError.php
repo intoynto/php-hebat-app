@@ -7,6 +7,9 @@ use Throwable;
 use PDOException;
 use Slim\Exception\HttpException;
 use Intoy\HebatDatabase\QueryException;
+use Intoy\HebatSupport\Validation\Exceptions\{
+    MissingRequiredParameterException
+};
 
 trait TrackError 
 {
@@ -48,6 +51,11 @@ trait TrackError
     {
         $string=null;
         if($e instanceof HttpException)        
+        {
+            return $e->getMessage();
+        }
+
+        if($e instanceof MissingRequiredParameterException)
         {
             return $e->getMessage();
         }

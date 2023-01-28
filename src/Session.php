@@ -4,7 +4,10 @@ declare (strict_types=1);
 namespace Intoy\HebatApp;
 
 use Intoy\HebatFactory\Foundation\BaseSession;
-use Intoy\HebatSupport\Validation\Validator;
+use Intoy\HebatSupport\Validation\{
+    Validator,
+    Validation,
+};
 
 class Session extends BaseSession
 {
@@ -43,19 +46,23 @@ class Session extends BaseSession
         return $this->getFlash()->all();
     }
     
-    public function validate($inputs, array $rules, array $alias):Validator
+    /**    
+     * @return Validation
+     */
+    public function validate($inputs, array $rules, array $alias)
     {
         $validator=new Validator();
-        $validator->make($inputs, $rules, $alias);
-        $validator->validate();
+        $valton=$validator->make($inputs, $rules);
+        $valton->setAliases($alias);
+        $valton->validate();
         
         $this->flashSet($inputs,"old");
 
-        if($validator->failed())
+        if($valton->failed())
         {
-            $this->flashSet($validator->getNotValidData(),"error");
+            $this->flashSet($valton->getNotValidData(),"error");
         }
         
-        return $validator;
+        return $valton;
     }
 }
