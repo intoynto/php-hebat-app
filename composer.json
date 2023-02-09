@@ -27,6 +27,6 @@
         "intoy/hebat-factory": "^0.1.4",
         "intoy/hebat-support": "^0.1.3",
         "intoy/hebat-database": "^0.2.4",
-        "intoy/hebat-validation": "^0.1.6"
+        "intoy/hebat-validation": "^0.1.7"
     }
 }
