@@ -31,9 +31,10 @@ class RouteContextMiddleware
         $context->storeRequest($request);
         app()->bind(Context::class,$context);
 
-        // Register input request untuk callable global function "back"
-        $input=new InputRequest($request,$route);
-        app()->bind(InputRequest::class,$input);
+        // Register input request untuk callable global function for "back" in container
+        app()->bind(InputRequest::class,function() use ($request, $route){
+            return new InputRequest($request,$route);
+        });
 
         // register Redirect class untuk Redirect
         app()->bind(Redirect::class,fn()=>new Redirect(app()->resolve(Factory::class)));
