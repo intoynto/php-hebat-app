@@ -23,7 +23,7 @@ class HtmlErrorRenderer extends SlimHtmlErrorRenderer
 
     protected function resolveApplicationTitle():string
     {
-        $title=config("app.name");
+        $title=config('app.name');
         return $title?$title:$this->defaultErrorTitle;
     }
 
@@ -49,7 +49,7 @@ class HtmlErrorRenderer extends SlimHtmlErrorRenderer
             $html .= '<h2>Details</h2>';
             $html .= $this->renderFragmentException($exception);
         } else {
-            $html = "<p>{$this->getErrorDescription($exception)}</p>";
+            $html = '<p>'.$this->getErrorDescription($exception).'</p>';
         }
 
         return $this->renderHtmlBody($this->getErrorTitle($exception), $html);
@@ -64,17 +64,17 @@ class HtmlErrorRenderer extends SlimHtmlErrorRenderer
         $message=$this->defaultErrorDescription;
         if($exception instanceof QueryException && strstr($exception->getMessage(), 'SQLSTATE['))
         {
-            $message="Query or database has error occured";
+            $message='Query or database has error occured';
             preg_match('/SQLSTATE\[(\w+)\](.*)/', $exception->getMessage(), $matches); 
             if(isset($matches[1]))
             {
-                if($matches[1]==="08006")
+                if($matches[1]==='08006')
                 {
-                    $message="A website error has occurred. Failure db connection";
+                    $message='A website error has occurred. Failure db connection';
                 }
-                elseif($matches[1]==="42P01")
+                elseif($matches[1]==='42P01')
                 {
-                    $message="A website error has occurred. Table or view undefined";
+                    $message='A website error has occurred. Table or view undefined';
                 }
             }
         }
@@ -91,37 +91,37 @@ class HtmlErrorRenderer extends SlimHtmlErrorRenderer
         $sub=[];
         if($exception instanceof HttpNotFoundException)
         {
-            $sub[]="Page request not found";
+            $sub[]='Page request not found';
         }
         elseif($exception instanceof HttpNotImplementedException)
         {
-            $sub[]="Page request not implementation";
+            $sub[]='Page request not implementation';
         }
         elseif($exception instanceof HttpMethodNotAllowedException)
         {
-            $sub[]="Method not allowed. The request method is not supported for the requested resource";
+            $sub[]='Method not allowed. The request method is not supported for the requested resource';
         }
         elseif($exception instanceof HttpForbiddenException)
         {
-            $sub[]="Access denied for this page or request";
+            $sub[]='Access denied for this page or request';
         }
         elseif($exception instanceof HttpUnauthorizedException)
         {
-            $sub[]="401 Unauthorized. he request requires valid user authentication";
+            $sub[]='401 Unauthorized. he request requires valid user authentication';
         }
         elseif($exception instanceof QueryException && strstr($exception->getMessage(), 'SQLSTATE['))
         {
-            $message="Query or database has error occured";
+            $message='Query or database has error occured';
             preg_match('/SQLSTATE\[(\w+)\](.*)/', $exception->getMessage(), $matches); 
             if(isset($matches[1]))
             {
-                if($matches[1]==="08006")
+                if($matches[1]==='08006')
                 {
-                    $message="Failure db connection";
+                    $message='Failure db connection';
                 }
-                elseif($matches[1]==="42P01")
+                elseif($matches[1]==='42P01')
                 {
-                    $message="Table or view undefined";
+                    $message='Table or view undefined';
                 }
             }
             $sub[]=$message;
@@ -129,7 +129,7 @@ class HtmlErrorRenderer extends SlimHtmlErrorRenderer
         else {
             $sub[]='The application could not run because of the following error';        
         }
-        return '<p>'.implode(". ",$sub).".</p>";
+        return '<p>'.implode('. ',$sub).'.</p>';
     }
 
 

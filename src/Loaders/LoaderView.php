@@ -16,7 +16,7 @@ class LoaderView extends Loader
         $callback=function()
         {
             $is_production=is_production();
-            $config_app=config("app");
+            $config_app=config('app');
 
             $app=[];
             foreach(array_keys($config_app) as $key)
@@ -27,9 +27,9 @@ class LoaderView extends Loader
                     $app[$key]=$value;
                 }
             }
-            $app["is_production"]=$is_production;
-            $app["is_debug"]=!$is_production;
-            $app["path"]=url_base();
+            $app['is_production']=$is_production;
+            $app['is_debug']=!$is_production;
+            $app['path']=url_base();
 
             $twig_settings=config('twig.twig');
             $twig_path=config('twig.path');

@@ -79,6 +79,6 @@ class Helper
     public static function determineContentJson($request)
     {
         $content_type=Helper::determineContentType($request);
-        return in_array($content_type,["text/json","application/json"]);
+        return in_array($content_type,['text/json','application/json']);
     }
 }

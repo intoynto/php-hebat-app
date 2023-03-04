@@ -55,7 +55,7 @@ class RouteProvider extends Provider
 
     protected function boot()
     {        
-        $prefixs=config("routes.prefix");
+        $prefixs=config('routes.prefix');
         $keys=[];
         $values=[];
         $setups=[];
@@ -68,15 +68,15 @@ class RouteProvider extends Provider
                 $files=$this->scanFilesFromPrefix($key);
                 sort($files);
 
-                $kernelMiddlewares=$this->app->has("middleware")
-                                   ?($this->app->resolve("middleware")??[])
+                $kernelMiddlewares=$this->app->has('middleware')
+                                   ?($this->app->resolve('middleware')??[])
                                    :[];
                 $selfMiddleware=data_get($kernelMiddlewares,$key,[]);
-                $globalMiddleware=data_get($kernelMiddlewares,"global",[]);
+                $globalMiddleware=data_get($kernelMiddlewares,'global',[]);
                 $set=[
-                    "path"=>$value,
-                    "files"=>$files,
-                    "middlewares"=>[...$selfMiddleware, ...$globalMiddleware],
+                    'path'=>$value,
+                    'files'=>$files,
+                    'middlewares'=>[...$selfMiddleware, ...$globalMiddleware],
                 ];
                 if(empty($value) && !$empty_setup)
                 {
@@ -91,12 +91,12 @@ class RouteProvider extends Provider
         
         foreach($setups as $key => $option)
         {
-            $this->setupRouteGroup($key,$option["path"],$option["files"],$option["middlewares"]);
+            $this->setupRouteGroup($key,$option['path'],$option['files'],$option['middlewares']);
         }              
 
         if(!is_production())
         {
-            $this->bind("native.routeGroups",fn()=>$setups);
+            $this->bind('native.routeGroups',fn()=>$setups);
         }
     }
 

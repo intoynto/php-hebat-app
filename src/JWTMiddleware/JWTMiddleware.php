@@ -46,19 +46,19 @@ class JWTMiddleware implements MiddlewareInterface
      * @var mixed[]
      */
     private $options = [
-        "secure" => false, // secure schema https
-        "relaxed" => ["localhost", "127.0.0.1"],
-        "algorithm" => ["HS256", "HS512", "HS384"],
-        "header" => "Authorization",
-        "regexp" => "/Bearer\s+(.*)$/i",
-        "cookie" => "token",
-        "attribute" => "token",
+        'secure' => false, // secure schema https
+        'relaxed' => ['localhost', '127.0.0.1'],
+        'algorithm' => ['HS256', 'HS512', 'HS384'],
+        'header' => 'Authorization',
+        'regexp' => '/Bearer\s+(.*)$/i',
+        'cookie' => 'token',
+        'attribute' => 'token',
         'leeway'=>null,
-        "path" => "/",
-        "ignore" => null,
-        "before" => null,
-        "after" => null,
-        "error" => null
+        'path' => "/",
+        'ignore' => null,
+        'before' => null,
+        'after' => null,
+        'error' => null
     ];
 
 
@@ -85,11 +85,11 @@ class JWTMiddleware implements MiddlewareInterface
         if(!isset($options['rules']))
         {
             $this->rules->push(new RequestMethodRule([
-                "ignore" => ["OPTIONS"]
+                'ignore' => ['OPTIONS']
             ]));
             $this->rules->push(new RequestPathRule([
-                "path" => $this->options["path"],
-                "ignore" => $this->options["ignore"]
+                'path' => $this->options['path'],
+                'ignore' => $this->options['ignore']
             ]));
         }
     }
@@ -107,9 +107,9 @@ class JWTMiddleware implements MiddlewareInterface
 
 
         /* HTTP allowed only if secure is false or server is in relaxed array. */
-        if ("https" !== $scheme && true === $this->options["secure"]) {
-            if (!in_array($host, $this->options["relaxed"])) {
-                $message = sprintf("Insecure use of middleware over %s denied by configuration.",strtoupper($scheme));
+        if ('https' !== $scheme && true === $this->options['secure']) {
+            if (!in_array($host, $this->options['relaxed'])) {
+                $message = sprintf('Insecure use of middleware over %s denied by configuration.',strtoupper($scheme));
                 throw new RuntimeException($message);
             }
         }
@@ -126,25 +126,25 @@ class JWTMiddleware implements MiddlewareInterface
         } catch (RuntimeException | DomainException $exception) {
             $response = (new ResponseFactory)->createResponse(401, $exception->getMessage());
             return $this->processError($response, [
-                "message" => $exception->getMessage(),
-                "uri" => (string)$request->getUri()
+                'message' => $exception->getMessage(),
+                'uri' => (string)$request->getUri()
             ]);
         }
 
         $params = [
-            "decoded" => $decoded,
-            "token" => $token,
+            'decoded' => $decoded,
+            'token' => $token,
         ];
 
         /* Add decoded token to request as attribute when requested. */
-        if ($this->options["attribute"]) {
-            $request = $request->withAttribute($this->options["attribute"], $decoded);
+        if ($this->options['attribute']) {
+            $request = $request->withAttribute($this->options['attribute'], $decoded);
         }
 
         /* Modify $request before calling next middleware. */
-        if (is_callable($this->options["before"])) {
+        if (is_callable($this->options['before'])) {
             $response = (new ResponseFactory)->createResponse(200);
-            $beforeRequest = $this->options["before"]($request, $params);
+            $beforeRequest = $this->options['before']($request, $params);
             if ($beforeRequest instanceof Request) 
             {
                 $request = $beforeRequest;
@@ -155,8 +155,8 @@ class JWTMiddleware implements MiddlewareInterface
         $response = $handler->handle($request);
 
         /* Modify $response before returning. */
-        if (is_callable($this->options["after"])) {
-            $afterResponse = $this->options["after"]($response, $params);
+        if (is_callable($this->options['after'])) {
+            $afterResponse = $this->options['after']($response, $params);
             if ($afterResponse instanceof Response) {
                 return $afterResponse;
             }
@@ -187,10 +187,10 @@ class JWTMiddleware implements MiddlewareInterface
     private function fetchToken(Request $request): string
     {
         /* Check for token in header. */
-        $header = $request->getHeaderLine($this->options["header"]);
+        $header = $request->getHeaderLine($this->options['header']);
 
         if (false === empty($header)) {
-            if (preg_match($this->options["regexp"], $header, $matches)) 
+            if (preg_match($this->options['regexp'], $header, $matches)) 
             {               
                 return $matches[1];
             }
@@ -202,14 +202,14 @@ class JWTMiddleware implements MiddlewareInterface
 
         if (!empty($cookieValue)) 
         {            
-            if (preg_match($this->options["regexp"], $cookieValue, $matches)) {
+            if (preg_match($this->options['regexp'], $cookieValue, $matches)) {
                 return $matches[1];
             }
             return $cookieValue;
         };
 
         /* If everything fails log and throw. */        
-        throw new RuntimeException("Authorization Required");
+        throw new RuntimeException('Authorization Required');
     }
 
 
@@ -225,7 +225,7 @@ class JWTMiddleware implements MiddlewareInterface
             //$decoded = JWT::decode($token,$this->options["secret"],(array) $this->options["algorithm"]);
 
             // Firebase jwt versi baru
-            $decoded = JWT::decode($token,new Key($this->options["secret"],$this->options["algorithm"][0]));
+            $decoded = JWT::decode($token,new Key($this->options['secret'],$this->options['algorithm'][0]));
             return (array) $decoded;
         } catch (Exception $exception) {
             throw $exception;
@@ -240,14 +240,14 @@ class JWTMiddleware implements MiddlewareInterface
      */
     private function processError(Response $response, array $arguments): Response
     {
-        if (is_callable($this->options["error"])) {
-            $handlerResponse = $this->options["error"]($response, $arguments);
+        if (is_callable($this->options['error'])) {
+            $handlerResponse = $this->options['error']($response, $arguments);
             if ($handlerResponse instanceof Response) {
                 return $handlerResponse;
             }
         }
         $response->getBody()->write(json_encode($arguments));
-        return $response->withHeader("content-type","application/json");
+        return $response->withHeader('content-type','application/json');
     }
 
 
@@ -269,13 +269,13 @@ class JWTMiddleware implements MiddlewareInterface
     {
         foreach($options as $key => $value)
         {
-            $key = str_replace(".", " ", $key);
+            $key = str_replace('.', ' ', $key);
             $method = lcfirst(ucwords($key));
-            $method = str_replace(" ", "", $method);
+            $method = str_replace(' ', '', $method);
             if (method_exists($this, "set".ucfirst($method))) {
                 /* Try to use setter */
                 /** @phpstan-ignore-next-line */
-                call_user_func([$this, "set".ucfirst($method)], $value);
+                call_user_func([$this, 'set'.ucfirst($method)], $value);
             } else {
                 /* Or fallback to setting option directly */
                 $this->options[$key] = $value;
@@ -299,7 +299,7 @@ class JWTMiddleware implements MiddlewareInterface
      */
     private function setPath($path): void
     {
-        $this->options["path"] = (array) $path;
+        $this->options['path'] = (array) $path;
     }
 
 
@@ -310,7 +310,7 @@ class JWTMiddleware implements MiddlewareInterface
      */
     private function setIgnore($ignore): void
     {
-        $this->options["ignore"] = (array) $ignore;
+        $this->options['ignore'] = (array) $ignore;
     }
 
 
@@ -319,7 +319,7 @@ class JWTMiddleware implements MiddlewareInterface
      */
     private function setCookie(string $cookie): void
     {
-        $this->options["cookie"] = $cookie;
+        $this->options['cookie'] = $cookie;
     }
 
 
@@ -328,7 +328,7 @@ class JWTMiddleware implements MiddlewareInterface
      */
     private function setSecure(bool $secure): void
     {
-        $this->options["secure"] = $secure;
+        $this->options['secure'] = $secure;
     }
 
 
@@ -337,7 +337,7 @@ class JWTMiddleware implements MiddlewareInterface
      */
     private function setHeader(string $header): void
     {
-        $this->options["header"] = $header;
+        $this->options['header'] = $header;
     }
 
 
@@ -346,7 +346,7 @@ class JWTMiddleware implements MiddlewareInterface
      */
     private function setRegexp(string $regexp): void
     {
-        $this->options["regexp"] = $regexp;
+        $this->options['regexp'] = $regexp;
     }
 
     /**
@@ -354,7 +354,7 @@ class JWTMiddleware implements MiddlewareInterface
      */
     private function setAttribute(string $attribute): void
     {
-        $this->options["attribute"] = $attribute;
+        $this->options['attribute'] = $attribute;
     }
 
 
@@ -365,7 +365,7 @@ class JWTMiddleware implements MiddlewareInterface
      */
     private function setAlgorithm($algorithm): void
     {
-        $this->options["algorithm"] = (array) $algorithm;
+        $this->options['algorithm'] = (array) $algorithm;
     }
 
     /**

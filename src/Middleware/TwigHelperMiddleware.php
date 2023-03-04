@@ -21,7 +21,7 @@ class TwigHelperMiddleware
         $route = $routeContext->getRoute();
 
         //register route_name 
-        $twig->getEnvironment()->addGlobal("route_name",$route?$route->getName():"");
+        $twig->getEnvironment()->addGlobal('route_name',$route?$route->getName():'');
 
         // global helper extension
         $twig->addExtension(new TwigHelperExtension($request->getUri()));
@@ -32,7 +32,7 @@ class TwigHelperMiddleware
         // webpack extension
         $extension=new WebpackExtension(
             /// Realpath manifest file
-            path_assets("manifest.json"),
+            path_assets('manifest.json'),
             
             // url_base
             url_base(),

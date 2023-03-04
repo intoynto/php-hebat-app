@@ -40,7 +40,7 @@ class LoaderConfig extends Loader
         //set base path app
         $this->app->setBasePath(url_base());
         // set time zone
-        $timeZone=config("app.timezone")??"Asia/Makassar";
+        $timeZone=config('app.timezone')??'Asia/Makassar';
         date_default_timezone_set($timeZone);
     }
 }

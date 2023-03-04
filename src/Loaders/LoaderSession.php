@@ -14,7 +14,7 @@ class LoaderSession extends Loader
     {
         $fn=new Session();  
         // custom session in php     
-        $fn->setOptions(config("session")); // parameter session php
+        $fn->setOptions(config('session')); // parameter session php
         $fn->start(); // start new session
         
         $this->app->bind(Session::class,$fn);

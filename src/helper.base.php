@@ -69,24 +69,24 @@ if(!function_exists('dd')){
             if($is_global_origin)
             {
                 // set origin cors flight
-                header("Access-Control-Allow-Origin:*");
+                header('Access-Control-Allow-Origin:*');
                 header('Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS');
             }
         }
 
-        $simfony_dumper="Symfony\Component\VarDumper\VarDumper";
+        $simfony_dumper='Symfony\Component\VarDumper\VarDumper';
         if(class_exists($simfony_dumper))
         {
             array_map(function($content) use ($simfony_dumper){
-                call_user_func_array($simfony_dumper."::dump",[$content]);
+                call_user_func_array($simfony_dumper.'::dump',[$content]);
             },func_get_args());
             exit(1);            
         }
         array_map(function ($content) {
-            echo "<pre>";
+            echo '<pre>';
             var_dump($content);
-            echo "</pre>";
-            echo "<hr>";
+            echo '</pre>';
+            echo '<hr>';
         }, func_get_args());
         exit(1);
     }
@@ -157,17 +157,17 @@ if (!function_exists('config'))
 if(!function_exists('is_production')){  
     function is_production  ():bool 
     {
-        $env="production";
-        if(app()->has("config"))
+        $env='production';
+        if(app()->has('config'))
         {
-            $env=(string)config("app.env");
+            $env=(string)config('app.env');
         }
         else {
-            $env=env("APP_ENV","production");
+            $env=env('APP_ENV','production');
         }
 
         $env=strtolower((string)$env);
-        return in_array($env,["production","prod"]);
+        return in_array($env,['production','prod']);
     }
 }
 
@@ -196,7 +196,7 @@ if(!function_exists('path_vendor')){
      * @param string $path
      * @return string
      */
-    function path_vendor ($path=''){ return realpath(__DIR__."/../").DIRECTORY_SEPARATOR.$path; }
+    function path_vendor ($path=''){ return realpath(__DIR__.'/../').DIRECTORY_SEPARATOR.$path; }
 }
 
 
@@ -209,7 +209,7 @@ if(!function_exists('path_app')){
      * @param string $path
      * @return string
      */
-    function path_app ($path=''):string { return path_base("app".DIRECTORY_SEPARATOR."{$path}"); }
+    function path_app ($path=''):string { return path_base('app'.DIRECTORY_SEPARATOR.$path); }
 }
 
 /**
@@ -223,7 +223,7 @@ if(!function_exists('path_public')){
      * @param string $path
      * @return string
      */ 
-    function path_public ($path=''):string { return path_app("public".DIRECTORY_SEPARATOR."{$path}"); }
+    function path_public ($path=''):string { return path_app('public'.DIRECTORY_SEPARATOR.$path); }
 }
 
 /**
@@ -237,7 +237,7 @@ if(!function_exists('path_assets')){
      * @param string $path
      * @return string
      */   
-    function path_assets ($path=''):string { return path_public("assets".DIRECTORY_SEPARATOR."{$path}"); }
+    function path_assets ($path=''):string { return path_public('assets'.DIRECTORY_SEPARATOR.$path); }
 }
 
 
@@ -251,7 +251,7 @@ if(!function_exists('path_config')){
      * @param string $path
      * @return string
      */   
-    function path_config ($path=''):string { return path_app("config".DIRECTORY_SEPARATOR."{$path}"); }
+    function path_config ($path=''):string { return path_app('config'.DIRECTORY_SEPARATOR.$path); }
 }
 
 /**
@@ -264,7 +264,7 @@ if(!function_exists('path_routes')){
      * @param string $path
      * @return string
      */     
-    function path_routes ($path=''):string { return path_app("routing".DIRECTORY_SEPARATOR."{$path}"); }
+    function path_routes ($path=''):string { return path_app('routing'.DIRECTORY_SEPARATOR.$path); }
 }
 
 /**
@@ -277,7 +277,7 @@ if(!function_exists('path_view')){
      * @param string $path
      * @return string
      */   
-    function path_view ($path=''):string { return path_app("views".DIRECTORY_SEPARATOR."{$path}"); }
+    function path_view ($path=''):string { return path_app('views'.DIRECTORY_SEPARATOR.$path); }
 }
 
 
@@ -293,7 +293,7 @@ if(!function_exists('url_base'))
      */
     function url_base($path = '')
     {
-        return ltrim($path, "/");
+        return ltrim($path, '/');
     }
 }
 
@@ -307,7 +307,7 @@ if(!function_exists('url_public'))
      * @param string $path
      * @return string
      */
-    function url_public ($path=''):string { return url_base("public/{$path}"); }
+    function url_public ($path=''):string { return url_base('public/'.$path); }
 }
 
 
@@ -320,7 +320,7 @@ if(!function_exists('url_asset')){
      * @param string $path
      * @return string
      */
-    function url_asset ($path=''):string { return url_public("assets/{$path}"); }
+    function url_asset ($path=''):string { return url_public('assets/'.$path); }
 }
 
 
@@ -336,16 +336,16 @@ if(!function_exists('full_url'))
      */
     function full_url($path='')
     {       
-        $url="";
+        $url='';
         // resolve from config if exists "base_url"
-        if(app()->has("config"))
+        if(app()->has('config'))
         {
-            $url=config("app.base_url");
+            $url=config('app.base_url');
             if($url)
             {
                 $url=trim((string)$url);
-                $url=rtrim($url,"/");
-                return "{$url}/{$path}";
+                $url=rtrim($url,'/');
+                return $url.'/'.$path;
             }
         }
 
@@ -353,7 +353,7 @@ if(!function_exists('full_url'))
          * @param string $route_name_of_home
          * @return string|null
          */
-        $resolveFromInputRequest=function($route_name_of_home="home"){
+        $resolveFromInputRequest=function($route_name_of_home='home'){
             try
             {
               $input=app()->resolve(InputRequest::class);
@@ -370,8 +370,8 @@ if(!function_exists('full_url'))
         $test=$resolveFromInputRequest();
         if($test)
         {
-            $url=rtrim($test,"/");
-            return "{$url}/{$path}";
+            $url=rtrim($test,'/');
+            return $url.'/'.$path;
         }       
         
         /**
@@ -392,7 +392,7 @@ if(!function_exists('full_url'))
                     
                     $phpSapi=PHP_SAPI;
                     $basePath=null;
-                    if($phpSapi==="cli-server")
+                    if($phpSapi==='cli-server')
                     {
                         $basePath=\Intoy\HebatFactory\Context::resolveBasePathFromScriptName($server);
                     }
@@ -409,7 +409,7 @@ if(!function_exists('full_url'))
                     $http = ($scheme ? $scheme . ':' : '') . ($authority ? '//' . $authority : '');
                     if($basePath)
                     {
-                        $http=rtrim($http,"/")."/".ltrim($basePath,"/");
+                        $http=rtrim($http,'/').'/'.ltrim($basePath,'/');
                     }
                     return $http;                    
                 }
@@ -427,14 +427,14 @@ if(!function_exists('full_url'))
         $test=$resolveFromServerGlobal();
         if($test)
         {
-            $url=rtrim($test,"/");
-            return "{$url}/{$path}";
+            $url=rtrim($test,'/');
+            return $url.'/'.$path;
         }    
 
         // full empty
         if($path)
         {
-            $path=ltrim($path,"/");
+            $path=ltrim($path,'/');
         }
 
         return $path;
@@ -454,7 +454,7 @@ if(!function_exists('full_url_asset'))
      */
     function full_url_asset($path='')
     {
-        return full_url("public/assets/{$path}");
+        return full_url('public/assets/'.$path);
     }
 }
 
@@ -552,7 +552,7 @@ if(!function_exists('responseJson'))
     {
         $res=app()->getResponseFactory()->createResponse($code, $reasonPhrase);
         $res->getBody()->write(json_encode($data));
-        return $res->withHeader("content-type","application/json");
+        return $res->withHeader('content-type','application/json');
     }
 }
 
@@ -595,7 +595,7 @@ if(!function_exists('write_log'))
      */
     function write_log(string $message,array $context=[])
     {
-        app()->resolve("logger.app")->info($message,$context);
+        app()->resolve('logger.app')->info($message,$context);
     }
 }
 

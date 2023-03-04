@@ -11,7 +11,7 @@ final class ClassFinder
     public function __construct()
     {
         self::$files=null;
-        $file="vendor/composer/autoload_psr4.php";
+        $file='vendor/composer/autoload_psr4.php';
         $vendorFile=null;
         $paths=[path_vendor($file),path_base($file)];
         foreach($paths as $path)
@@ -25,7 +25,7 @@ final class ClassFinder
 
         if(!$vendorFile)
         {
-            throw new \Exception("Can't resolve autoload from config vendor");
+            throw new \Exception('Can\'t resolve autoload from config vendor');
         }
         
         self::$files=require $vendorFile;
@@ -39,13 +39,13 @@ final class ClassFinder
 
     protected function splitNameSpace($nameSpace)
     {
-        $split=explode("\\",$nameSpace);
-        if(\end($split)==="\\" || \end($split)==="")
+        $split=explode('\\',$nameSpace);
+        if(\end($split)==='\\' || \end($split)==='')
         {
             array_pop($split);
         }
         $main=array_shift($split);
-        return [$main."\\",$split];
+        return [$main.'\\',$split];
     }
 
     /**
@@ -60,7 +60,7 @@ final class ClassFinder
         [$main,$subNameSpaceDirs]=$this->splitNameSpace($prefixDirPsr4Key);
         $files=static::$files;
         $dir=array_shift($files[$main]);
-        $joinNameSpace=implode("\\",$subNameSpaceDirs);
+        $joinNameSpace=implode('\\',$subNameSpaceDirs);
         $classes=[];
         $scanDir=$dir.DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR,$subNameSpaceDirs).DIRECTORY_SEPARATOR;
         if(is_dir($scanDir))
@@ -69,7 +69,7 @@ final class ClassFinder
             $config_files = array_slice($folder, 2, count($folder));
             foreach($config_files as $file)           
             {
-                $fullNameSpace=$main.$joinNameSpace."\\".str_replace('.php', '', $file);
+                $fullNameSpace=$main.$joinNameSpace.'\\'.str_replace('.php', '', $file);
                 if(class_exists($fullNameSpace))
                 {
                     $classes[]=$fullNameSpace;

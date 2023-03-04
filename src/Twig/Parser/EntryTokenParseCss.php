@@ -58,7 +58,7 @@ class EntryTokenParseCss extends AbstractTokenParser
 
         $entryFile = $manifest[$manifestIndex];
         $is_webpack_dev_server=filter_var($entryFile,FILTER_VALIDATE_URL);
-        $entryFile =(!$is_webpack_dev_server && $this->publicDir)?rtrim($this->publicDir,"/")."/".$entryFile:$entryFile;
+        $entryFile =(!$is_webpack_dev_server && $this->publicDir)?rtrim($this->publicDir,'/').'/'.$entryFile:$entryFile;
 
         return $this->getEntryContent($token, $entryFile,$inline);
     }

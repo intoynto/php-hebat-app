@@ -18,7 +18,7 @@ final class RequestMethodRule implements RuleInterface
      * @var mixed[]
      */
     private $options = [
-        "ignore" => ["OPTIONS"]
+        'ignore' => ['OPTIONS']
     ];
 
     /**
@@ -31,6 +31,6 @@ final class RequestMethodRule implements RuleInterface
 
     public function __invoke(Request $request): bool
     {
-        return !in_array($request->getMethod(), $this->options["ignore"]);
+        return !in_array($request->getMethod(), $this->options['ignore']);
     }
 }

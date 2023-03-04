@@ -16,7 +16,7 @@ class Session extends BaseSession
      * @param string $message 
      * @param string $key
      */
-    public function flashAdd(string $message, $key="info")
+    public function flashAdd(string $message, $key='info')
     {
         $this->getFlash()->add($key,$message);
     }
@@ -26,7 +26,7 @@ class Session extends BaseSession
      * @param string $key
      * @param string[] $messages
      */
-    public function flashSet(array $messages,$key="info")
+    public function flashSet(array $messages,$key='info')
     {
         $this->getFlash()->set($key,$messages);
     }
@@ -36,7 +36,7 @@ class Session extends BaseSession
      * @param string $key
      * @return mixed
      */
-    public function flashGet(string $key="info")
+    public function flashGet(string $key='info')
     {
         return $this->getFlash()->get($key);
     }
@@ -56,11 +56,11 @@ class Session extends BaseSession
         $valton->setAliases($alias);
         $valton->validate();
         
-        $this->flashSet($inputs,"old");
+        $this->flashSet($inputs,'old');
 
         if($valton->failed())
         {
-            $this->flashSet($valton->getNotValidData(),"error");
+            $this->flashSet($valton->getNotValidData(),'error');
         }
         
         return $valton;

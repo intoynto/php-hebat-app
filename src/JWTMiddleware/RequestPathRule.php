@@ -16,8 +16,8 @@ final class RequestPathRule implements RuleInterface
      * @var mixed[]
      */
     private $options = [
-        "path" => ["/"],
-        "ignore" => []
+        'path' => ['/'],
+        'ignore' => []
     ];
 
     /**
@@ -57,26 +57,21 @@ final class RequestPathRule implements RuleInterface
         $origin_basePath=$basePath;  
         $origin_path=$path;      
 
-        if($basePath && $basePath!=="/")
+        if($basePath && $basePath!=='/')
         {            
-            $basePath=ltrim(rtrim($basePath,"/"),"/");
-            $path=ltrim(rtrim($path,"/"),"/");
+            $basePath=ltrim(rtrim($basePath,'/'),'/');
+            $path=ltrim(rtrim($path,'/'),'/');
 
             // check if path not assigned basepath
             if(!static::startsWith($path,$basePath))
             {
-                $path=$basePath."/".$path;
+                $path=$basePath.'/'.$path;
             }
 
-            if(!static::startsWith($path,"/"))
+            if(!static::startsWith($path,'/'))
             {
-                $path="/".$path;
-            }
-            //$basePathInPath=static::startsWith($path,$basePath);
-            //if($basePathInPath){
-            //    $path=substr($path,strlen($basePath));
-            //    $path=ltrim(rtrim($path,"/"),"/");
-            //}
+                $path='/'.$path;
+            }            
         }          
         
 
@@ -85,8 +80,8 @@ final class RequestPathRule implements RuleInterface
 
     public function __invoke(Request $request): bool
     {
-        $uri = "/" . $request->getUri()->getPath();
-        $uri = preg_replace("#/+#", "/", $uri);
+        $uri = '/' . $request->getUri()->getPath();
+        $uri = preg_replace('#/+#', '/', $uri);
         
         /**
          * Path harus relative terhadap web sub folder
@@ -97,25 +92,24 @@ final class RequestPathRule implements RuleInterface
 
         /* If request path is matches ignore should not authenticate. */
         
-        foreach ((array)$this->options["ignore"] as $ignore) {
-            $ignore = rtrim($ignore, "/");
+        foreach ((array)$this->options['ignore'] as $ignore) {
+            $ignore = rtrim($ignore, '/');
 
-            //if($ignore!=="/") { $ignore="/".ltrim($ignore,"/"); }
             $ignore=$this->prefixPathWithBasePath($ignore);            
 
-            if (!!preg_match("@^{$ignore}(/.*)?$@", (string) $uri)) 
+            if (!!preg_match('@^{$ignore}(/.*)?$@', (string) $uri)) 
             {
                 return false;
             }
         }
 
         /* Otherwise check if path matches and we should authenticate. */        
-        foreach ((array)$this->options["path"] as $path) 
+        foreach ((array)$this->options['path'] as $path) 
         {
-            $path = rtrim($path, "/"); 
+            $path = rtrim($path, '/'); 
 
             $path=$this->prefixPathWithBasePath($path);              
-            if (!!preg_match("@^{$path}(/.*)?$@", (string) $uri)) 
+            if (!!preg_match('@^{$path}(/.*)?$@', (string) $uri)) 
             {                   
                 return true;
             }

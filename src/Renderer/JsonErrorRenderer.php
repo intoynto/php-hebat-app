@@ -16,7 +16,7 @@ class JsonErrorRenderer extends SlimJsonErrorRenderer
     
     protected function resolveApplicationTitle():string
     {
-        $title=config("app.name");
+        $title=config('app.name');
         return $title?$title:$this->defaultErrorTitle;
     }
 
@@ -32,9 +32,9 @@ class JsonErrorRenderer extends SlimJsonErrorRenderer
         }
 
         $string=$this->resolveApplicationTitle();
-        if(!Str::contains($string,"error"))
+        if(!Str::contains($string,'error'))
         {
-            $string.=" Error";
+            $string.=' Error';
         }
         
         return $string;
@@ -51,7 +51,7 @@ class JsonErrorRenderer extends SlimJsonErrorRenderer
         {
             return $string;
         }
-        return "The application could not run because of the following error";
+        return 'The application could not run because of the following error';
         
         return null;
     }
@@ -97,10 +97,10 @@ class JsonErrorRenderer extends SlimJsonErrorRenderer
             $message=$string;
         }
 
-        $errors["message"]=$message;
-        $errors["description"]=$exception->getMessage();
-        $errors["file"]=$exception->getFile();
-        $errors["line"]=$exception->getLine();
+        $errors['message']=$message;
+        $errors['description']=$exception->getMessage();
+        $errors['file']=$exception->getFile();
+        $errors['line']=$exception->getLine();
 
         return $errors;
     }

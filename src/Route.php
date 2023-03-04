@@ -111,7 +111,7 @@ class Route
     {
         $key=static::$configRouteName;
 
-        $namespaces=config("routes.controllers"); 
+        $namespaces=config('routes.controllers'); 
         $spase_key=data_get($namespaces,$key);
         if($spase_key)
         {
@@ -241,7 +241,7 @@ class Route
     public static function map(array $methods, string $pattern, $callable): RouteInterface
     {
         $newCallable=static::resolveCallable($callable);
-        $routeMethod="map";
+        $routeMethod='map';
         $originMethods=$methods;
         $methods=[];
         $allows=['GET','POST','PUT','DELETE'];
@@ -253,7 +253,7 @@ class Route
             }
         }
         if(count($methods)<1){
-            $methods=["OPTIONS"];
+            $methods=['OPTIONS'];
         }
         
         return static::$app->$routeMethod($methods,$pattern,$newCallable);

@@ -116,9 +116,9 @@ class HttpKernel extends Kernel
     {
         $verbs=[
             LoggerInterface::class,
-            "logger.app",
-            "logger.web",
-            "logger.api"
+            'logger.app',
+            'logger.web',
+            'logger.api'
         ];
         $logger=null;
         foreach($verbs as $log)
@@ -168,9 +168,9 @@ class HttpKernel extends Kernel
         if($errorHandle instanceof \Slim\Handlers\ErrorHandler)
         {
             $contexts=[
-                "text/html"=>HtmlErrorRenderer::class,
-                "application/json"=>JsonErrorRenderer::class,
-                "text/json"=>JsonErrorRenderer::class
+                'text/html'=>HtmlErrorRenderer::class,
+                'application/json'=>JsonErrorRenderer::class,
+                'text/json'=>JsonErrorRenderer::class
             ];
             foreach($contexts as $contextType => $render)
             {                
@@ -186,7 +186,7 @@ class HttpKernel extends Kernel
             }
 
             //set default error render
-            $errorHandle->setDefaultErrorRenderer("text/html",HtmlErrorRenderer::class);
+            $errorHandle->setDefaultErrorRenderer('text/html',HtmlErrorRenderer::class);
         }
         // add base path middleware
         app()->add(BasePathMiddleware::class);

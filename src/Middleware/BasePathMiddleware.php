@@ -17,7 +17,7 @@ class BasePathMiddleware
     protected function getBasePath(array $server, string $phpSapi = null)
     {
         $this->phpSapi=$phpSapi??PHP_SAPI;
-        if($this->phpSapi==="cli-server")
+        if($this->phpSapi==='cli-server')
         {
             $basePath=Context::resolveBasePathFromScriptName($server);
         }

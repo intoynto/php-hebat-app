@@ -17,7 +17,7 @@ class LoaderMiddleware extends Loader
 {
     protected function createInputMiddlewareResolvable(string $class)
     {
-        $prefix="logger.web";
+        $prefix='logger.web';
         return function(ContainerInterface $c) use ($class,$prefix){
             return new $class($c->get($prefix));
         };
@@ -30,7 +30,7 @@ class LoaderMiddleware extends Loader
         ];
 
         $groupMiddleware=[
-            "global"=>[],
+            'global'=>[],
         ];
 
         $all_middleware=[];
@@ -40,7 +40,7 @@ class LoaderMiddleware extends Loader
             $true=class_exists($class) || $class==='csrf';
             if($true)
             {
-                $groupMiddleware["global"][]=$class;
+                $groupMiddleware['global'][]=$class;
                 $all_middleware[]=$class;
             }
         }
@@ -78,7 +78,7 @@ class LoaderMiddleware extends Loader
                     true,
                     true,
                     true,
-                    $this->app->resolve("logger.{$this->prefix}")
+                    $this->app->resolve('logger.'.$this->prefix)
                 );
                 $errorHandle=$guard->getDefaultErrorHandler();
                 if($errorHandle instanceof \Slim\Handlers\ErrorHandler)
@@ -109,13 +109,13 @@ class LoaderMiddleware extends Loader
             {
                 $contentType=Helper::determineContentType($request);
                 $isJson=in_array($contentType,['text/json','application/json']);
-                $msg="Invalid Cross-site request forgeries";
+                $msg='Invalid Cross-site request forgeries';
                 if($isJson)
                 {
                     throw new \Slim\Exception\HttpForbiddenException($request,$msg);
                 }
 
-                session()->flashSet([$msg],"message");
+                session()->flashSet([$msg],'message');
                 return back();
             };
             $mid->setFailurHandler($handlerFailure);

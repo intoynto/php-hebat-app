@@ -91,8 +91,8 @@ class TwigHelperExtension extends AbstractExtension
         {
             $m=(int)$date->format('m'); // 01 - 12;
             $bulans=[
-                "",//empty 0
-                "Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember",
+                '',//empty 0
+                'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember',
             ];
             $bulan=isset($bulans[$m])?$bulans[$m]:null;
             if($bulan)
@@ -112,8 +112,8 @@ class TwigHelperExtension extends AbstractExtension
         $date=static::toDateTime($value);
         if(!$date) return null;
 
-        $tanggal=$date->format("d"); // 01 - 31
-        $bulan=$long?static::getNamaBulan($date,$long):$date->format("m");
+        $tanggal=$date->format('d'); // 01 - 31
+        $bulan=$long?static::getNamaBulan($date,$long):$date->format('m');
         $tahun=$date->format('Y');
         $formats=[$tanggal,$bulan,$tahun];
         return implode($separator,$formats);
