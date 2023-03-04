@@ -13,13 +13,13 @@ class LoaderLogger extends Loader
 {
     protected function setupLogger(string $prefix)
     {
-        $this->app->bind('logger.{$prefix}',function() use ($prefix) {
+        $this->app->bind('logger.'.$prefix,function() use ($prefix) {
             $processor=new UidProcessor();
             $logger=new Logger('App');
             $logger->pushProcessor($processor);
 
             $level=is_production()?\Monolog\Logger::DEBUG:\Monolog\Logger::INFO;
-            $handler=new StreamHandler(config('logger.path').'/{$prefix}.log',$level);
+            $handler=new StreamHandler(config('logger.path').'/'.$prefix.'.log',$level);
             $logger->pushHandler($handler);
             return $logger;
         });
