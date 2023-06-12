@@ -94,23 +94,83 @@ class JWTMiddleware implements MiddlewareInterface
         }
     }
 
+    /**
+     * @param Request $request
+     * @return string|null
+     */
+    public static function determineContentType($request)
+    {
+        $contents=[
+            'application/json',
+            'application/xml',
+            'text/json',
+            'text/xml',
+            'text/html',
+            'text/plain',
+        ];
+
+        $acceptHeader = $request->getHeaderLine('Accept');
+        $selectedContentTypes = array_intersect(
+            explode(',', $acceptHeader),
+            $contents
+        );
+
+        $count = count($selectedContentTypes);
+        if ($count) {
+            $current = current($selectedContentTypes);
+
+            /**
+             * Ensure other supported content types take precedence over text/plain
+             * when multiple content types are provided via Accept header.
+             */
+            if ($current === 'text/plain' && $count > 1) {
+                $next = next($selectedContentTypes);
+                if (is_string($next)) {
+                    return $next;
+                }
+            }
+
+            if (is_string($current)) {
+                return $current;
+            }
+        }
+
+        if (preg_match('/\+(json|xml)/', $acceptHeader, $matches)) {
+            $mediaType = 'application/' . $matches[1];
+            return $mediaType;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    public static function determineContentJson($request)
+    {
+        $content_type=static::determineContentType($request);
+        return in_array($content_type,['text/json','application/json']);
+    }
+
     public function process(Request $request, Handler $handler): Response
     {
         $scheme = $request->getUri()->getScheme();
-        $host = $request->getUri()->getHost();
+        $host = $request->getUri()->getHost();        
 
         /* If rules say we should not authenticate call next and return. */
+        // is allowed request 
         if (false === $this->shouldAuthenticate($request)) 
         {
             return $handler->handle($request);
         }
 
-
         /* HTTP allowed only if secure is false or server is in relaxed array. */
         if ('https' !== $scheme && true === $this->options['secure']) {
             if (!in_array($host, $this->options['relaxed'])) {
                 $message = sprintf('Insecure use of middleware over %s denied by configuration.',strtoupper($scheme));
-                throw new RuntimeException($message);
+                $response = (new ResponseFactory)->createResponse(401);
+                return $this->processError($response,compact('message'));                
             }
         }
 
@@ -123,7 +183,8 @@ class JWTMiddleware implements MiddlewareInterface
             }
             $token = $this->fetchToken($request);
             $decoded = $this->decodeToken($token);
-        } catch (RuntimeException | DomainException $exception) {
+        } catch (RuntimeException | DomainException $exception) 
+        {
             $response = (new ResponseFactory)->createResponse(401, $exception->getMessage());
             return $this->processError($response, [
                 'message' => $exception->getMessage(),
