@@ -92,12 +92,28 @@ final class RequestPathRule implements RuleInterface
 
         /* If request path is matches ignore should not authenticate. */
         
-        foreach ((array)$this->options['ignore'] as $ignore) {
-            $ignore = rtrim($ignore, '/');
+        foreach ((array)$this->options['ignore'] as $path) {
+            $path = rtrim($path, '/');
 
-            $ignore=$this->prefixPathWithBasePath($ignore);            
+            $path=$this->prefixPathWithBasePath($path);    
+            
+            // normalize path and url
+            if(static::startsWith($uri,'/'))
+            {
+                if(!static::startsWith($path,'/'))
+                {
+                    $path='/'.$path;
+                }
+            }
+            elseif(!static::startsWith($uri,'/'))
+            {
+                if(static::startsWith($path,'/'))
+                {
+                    $path=ltrim($path,'/');
+                }
+            }
 
-            if (!!preg_match('@^{$ignore}(/.*)?$@', (string) $uri)) 
+            if (!!preg_match("@^{$path}(/.*)?$@", (string) $uri)) 
             {
                 return false;
             }
@@ -108,8 +124,25 @@ final class RequestPathRule implements RuleInterface
         {
             $path = rtrim($path, '/'); 
 
-            $path=$this->prefixPathWithBasePath($path);              
-            if (!!preg_match('@^{$path}(/.*)?$@', (string) $uri)) 
+            $path=$this->prefixPathWithBasePath($path);  
+            
+            // normalize path and url
+            if(static::startsWith($uri,'/'))
+            {
+                if(!static::startsWith($path,'/'))
+                {
+                    $path='/'.$path;
+                }
+            }
+            elseif(!static::startsWith($uri,'/'))
+            {
+                if(static::startsWith($path,'/'))
+                {
+                    $path=ltrim($path,'/');
+                }
+            }
+            
+            if (!!preg_match("@^{$path}(/.*)?$@", (string) $uri)) 
             {                   
                 return true;
             }
