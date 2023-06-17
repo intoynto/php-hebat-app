@@ -53,7 +53,7 @@ final class ClassFinder
      * @param string $prefixDirPsr4Key contoh "App\\" atau "Api\\" atau "Domain\\"
      * @return string[] of fullNameSpaces by entry class in directory
      */
-    public function getClassesInNameSpaces($prefixDirPsr4Key)
+    protected function getClassesInNameSpacesSingleString($prefixDirPsr4Key)
     {
         if(!$prefixDirPsr4Key) return [];
 
@@ -75,7 +75,42 @@ final class ClassFinder
                     $classes[]=$fullNameSpace;
                 }
             }
+        }       
+
+        return $classes;
+    }
+
+    /**
+     * Get classes in directory by autoload prefixDirsPsr4
+     * @param string|string[] $prefixDirPsr4Key contoh "App\\" atau "Api\\" atau "Domain\\"
+     * @return string[] of fullNameSpaces by entry class in directory
+     */
+    public function getClassesInNameSpaces($prefixDirPsr4Key)
+    {
+        if((is_string($prefixDirPsr4Key) && strlen($prefixDirPsr4Key)<1) 
+            || (is_array($prefixDirPsr4Key) && count($prefixDirPsr4Key)<1)
+        )
+        {
+            return [];
         }
+
+        $classes=[];
+
+        if(is_string($prefixDirPsr4Key))
+        {
+            $classes=$this->getClassesInNameSpacesSingleString($prefixDirPsr4Key);
+        }
+        else
+        {
+            foreach(array_values($prefixDirPsr4Key) as $nameSpace)
+            {
+                $test=$this->getClassesInNameSpacesSingleString($nameSpace);
+                if(is_array($test) && count($test)>0)
+                {
+                    $classes=[...$classes,...$test];
+                }
+            }
+        }               
 
         return $classes;
     }
