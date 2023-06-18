@@ -26,6 +26,7 @@ use Intoy\HebatApp\Session;
  * path_app
  * path_public
  * path_assets
+ * path_webpack_manifest
  * path_config
  * path_routes
  * path_view
@@ -228,7 +229,7 @@ if(!function_exists('path_public')){
 
 /**
  * real path for assets directory 
- * access for manifest.json etc,..
+ * access for folder in : public/assets  etc,..
  * for TwigHelperMiddleware
  */
 if(!function_exists('path_assets')){  
@@ -238,6 +239,21 @@ if(!function_exists('path_assets')){
      * @return string
      */   
     function path_assets ($path=''):string { return path_public('assets'.DIRECTORY_SEPARATOR.$path); }
+}
+
+
+/**
+ * real path for assets directory 
+ * access for wbpack manifest.json etc,..
+ * for TwigHelperMiddleware
+ */
+if(!function_exists('path_webpack_manifest')){  
+    /**
+     * Get real "assets" path dir of App Win/Linux directory of server machine
+     * @param string $path
+     * @return string
+     */   
+    function path_webpack_manifest ($path=''):string { return path_assets($path); }
 }
 
 
