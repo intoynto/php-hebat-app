@@ -60,7 +60,11 @@ class Session extends BaseSession
 
         if($valton->failed())
         {
-            $this->flashSet($valton->getNotValidData(),'error');
+            $error=$valton->getInputErrors();
+            if($error)
+            {
+                $this->flashSet($error,'error');
+            }
         }
         
         return $valton;

@@ -7,6 +7,7 @@ namespace Intoy\HebatApp;
 use Intoy\HebatFactory\InputRequest;
 use Intoy\HebatSupport\Validation\{
     Validation,
+    ErrorBag,
 };
 
 class InputFormRequest extends InputRequest
@@ -69,6 +70,33 @@ class InputFormRequest extends InputRequest
             return true;
         }
         return false;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getInputErrors()
+    {
+        if($this->validator && $this->validator->failed())
+        {
+            $error=$this->validator->errors();
+            if($error instanceof ErrorBag)
+            {
+                $errors=$error->toArray();
+                $error=[];
+                foreach($errors as $key => $value)
+                {
+                    $value=is_array($value)?array_values($value):$value;
+                    $value=is_array($value)?implode(", ",$value):$value;
+                    $error[$key]=$value;
+                }
+                $error=count($error)?$error:null;
+            }
+
+            return $error;
+        }
+
+        return null;
     }
 
     /**
