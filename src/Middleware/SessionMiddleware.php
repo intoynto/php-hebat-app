@@ -15,6 +15,7 @@ class SessionMiddleware
         }
         $response=$handler->handle($request);
         session()->save();
+        session()->flashAll(); // clear save flash
         return $response;
     }
 }
