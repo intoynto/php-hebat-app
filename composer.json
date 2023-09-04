@@ -23,10 +23,10 @@
         "monolog/monolog": "^2.4",
         "firebase/php-jwt": "^6.1",
         "dflydev/fig-cookies": "^3.0",
-        "slim/twig-view": "^3.3",
-        "intoy/hebat-factory": "^0.1.5",
         "intoy/hebat-validation": "^0.1.9",
         "intoy/hebat-support": "^0.1.7",
-        "intoy/hebat-database": "^0.2.7"
+        "intoy/hebat-database": "^0.2.8",
+        "intoy/hebat-factory": "^0.1.6",
+        "slim/twig-view": "^3.3"
     }
 }
