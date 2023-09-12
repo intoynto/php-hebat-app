@@ -17,12 +17,12 @@ class Boot
     /**
      * @var ContainerInterface
      */
-    private static $container;
+    protected static $container;
 
     /**
      * @var App
      */
-    private static $app;
+    protected static $app;
 
     /**
      * @return ContainerInterface
@@ -51,6 +51,16 @@ class Boot
     }
 
     /**
+     * Create Http Kernel
+     * @var App $app
+     * @return HttpKernel
+     */
+    protected static function createHttpKernel($app)
+    {
+        return new HttpKernel($app);
+    }
+
+    /**
      * @return App
      */
     public static function createApp()
@@ -59,8 +69,8 @@ class Boot
 
         static::$app=AppFactory::createFromContainer(static::createContainer());
 
-        // store in kernel
-        $kernel=new HttpKernel(static::$app);
+        // store in kernel ?
+        static::createHttpKernel(static::$app);
 
         // return app;
         return static::$app;

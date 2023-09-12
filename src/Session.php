@@ -45,13 +45,21 @@ class Session extends BaseSession
     {
         return $this->getFlash()->all();
     }
+
+    /**
+     * @return Validator
+     */
+    protected static function resolveValidator()
+    {
+        return new Validator();
+    }
     
     /**    
      * @return Validation
      */
     public function validate($inputs, array $rules, array $alias)
     {
-        $validator=new Validator();
+        $validator=static::resolveValidator();
         $valton=$validator->make($inputs, $rules);
         $valton->setAliases($alias);
         $valton->validate();

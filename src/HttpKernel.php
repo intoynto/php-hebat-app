@@ -80,10 +80,14 @@ class HttpKernel extends Kernel
      * {@inheritdoc}
      */
     public array $middleware=[
-        CorsMiddleware::class,
         RouteContextMiddleware::class, //register tracking input
+
+        TwigHelperMiddleware::class, // global var and Wbpack Extension  
+        \Slim\Views\TwigMiddleware::class, //default slim Twig middleware runtime extension
+
         SlimBodyParsingMiddleware::class,
         SessionMiddleware::class, //start first for session  
+        CorsMiddleware::class, // cors origin
         TrailingSlashMiddleware::class, // redirect trailing slash
     ];
     
@@ -92,8 +96,6 @@ class HttpKernel extends Kernel
      */
     public array $middlewareGroups=[
         'web'=>[
-            TwigHelperMiddleware::class, // global var and Wbpack Extension  
-            \Slim\Views\TwigMiddleware::class, //default slim Twig middleware runtime extension
             GuardMiddleware::class,            
         ],
         'api'=>[

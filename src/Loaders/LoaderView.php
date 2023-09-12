@@ -6,8 +6,8 @@ namespace Intoy\HebatApp\Loaders;
 
 use Slim\Views\Twig;
 use Twig\Extension\DebugExtension as TwigDebugExtension;
-use Twig\Loader\FilesystemLoader;
 use Intoy\HebatFactory\Loader;
+use Intoy\HebatApp\Twig\Loaders\FileSystemLoader;
 
 class LoaderView extends Loader
 {
@@ -33,7 +33,8 @@ class LoaderView extends Loader
 
             $twig_settings=config('twig.twig');
             $twig_path=config('twig.path');
-            $loader=new FilesystemLoader($twig_path);
+
+            $loader=new FilesystemLoader($twig_path); // custom file system loader
 
             $tw=new Twig($loader,$twig_settings);
             $tw->getEnvironment()->addGlobal('app',(object)$app); // assign in twig environment 

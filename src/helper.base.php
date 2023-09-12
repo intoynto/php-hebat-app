@@ -173,7 +173,7 @@ if(!function_exists('is_production')){
 }
 
 /**
- * real path untuk folder root untuk website 
+ * real path untuk folder root untuk kernel 
  */
 if(!function_exists('path_base')){  
     /**
@@ -280,7 +280,7 @@ if(!function_exists('path_routes')){
      * @param string $path
      * @return string
      */     
-    function path_routes ($path=''):string { return path_app('routing'.DIRECTORY_SEPARATOR.$path); }
+    function path_routes ($path=''):string { return path_app('Routing'.DIRECTORY_SEPARATOR.$path); }
 }
 
 /**
