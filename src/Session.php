@@ -4,9 +4,12 @@ declare (strict_types=1);
 namespace Intoy\HebatApp;
 
 use Intoy\HebatFactory\Foundation\BaseSession;
+use Intoy\HebatSupport\Validation\Interfaces\{
+    ValidatorInterface,
+    ValidationInterface,
+};
 use Intoy\HebatSupport\Validation\{
     Validator,
-    Validation,
 };
 
 class Session extends BaseSession
@@ -47,15 +50,50 @@ class Session extends BaseSession
     }
 
     /**
-     * @return Validator
+     * @return ValidatorInterface
      */
     protected static function resolveValidator()
     {
+        if(function_exists('validator'))
+        {
+            try
+            {
+                $validator=call_user_func('validator');
+                if($validator instanceof ValidatorInterface)
+                {
+                    return $validator;
+                }
+            }
+            catch(\Exception $e)
+            {
+
+            }
+        }
+        else {
+            // get in container
+            try {
+                if(app()->has(ValidatorInterface::class))
+                {
+                    $validator=app()->resolve(ValidatorInterface::class);
+                    if($validator instanceof ValidatorInterface)
+                    {
+                        return $validator;
+                    }
+                }
+            }
+            catch(\Exception $e)
+            {
+                // no exception
+            }
+        }
+        
+
+        // no validator. but resolve default validator
         return new Validator();
     }
     
     /**    
-     * @return Validation
+     * @return ValidationInterface
      */
     public function validate($inputs, array $rules, array $alias)
     {

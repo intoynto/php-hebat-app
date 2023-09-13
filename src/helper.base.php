@@ -10,6 +10,9 @@ use Intoy\HebatSupport\Optional;
 use Psr\Http\Message\ResponseInterface as Response;
 use Intoy\HebatApp\Session;
 
+use Intoy\HebatSupport\Validation\Interfaces\ValidatorInterface;
+use Intoy\HebatSupport\Validation\Validator;
+
 /**
  * Callable function
  * =============================
@@ -616,7 +619,7 @@ if(!function_exists('write_log'))
 }
 
 
-if (! function_exists('optional')) {
+if (!function_exists('optional')) {
     /**
      * Provide access to optional objects.
      *
@@ -631,5 +634,17 @@ if (! function_exists('optional')) {
         } elseif (! is_null($value)) {
             return $callback($value);
         }
+    }
+}
+
+if(!function_exists('validator'))
+{
+    /**
+     * @param array $messages
+     * @return ValidatorInterface
+     */
+    function validator($messages=[])
+    {
+        return new Validator($messages);
     }
 }
