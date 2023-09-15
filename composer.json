@@ -27,6 +27,6 @@
         "slim/twig-view": "^3.3",
         "intoy/hebat-support": "^0.1.8",
         "intoy/hebat-database": "^0.2.9",
-        "intoy/hebat-validation": "^0.2.0"
+        "intoy/hebat-validation": "^0.2.1"
     }
 }
