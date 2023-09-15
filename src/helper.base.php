@@ -51,6 +51,8 @@ use Intoy\HebatSupport\Validation\Validator;
  * connection
  * write_log
  * optional
+ * 
+ * validator
  */
 
 if(!function_exists('throw_when'))

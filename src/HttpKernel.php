@@ -63,9 +63,9 @@ use Slim\Middleware\{BodyParsingMiddleware as SlimBodyParsingMiddleware,ErrorMid
 class HttpKernel extends Kernel
 {
     /**
- * Global loader
- * @var string[]
- */
+     * Global loader
+     * @var string[]
+     */
     public $loaders=[
         LoaderConfig::class,
         LoaderLogger::class,
@@ -87,7 +87,7 @@ class HttpKernel extends Kernel
 
         SlimBodyParsingMiddleware::class,
         SessionMiddleware::class, //start first for session  
-        CorsMiddleware::class, // cors origin
+        
         TrailingSlashMiddleware::class, // redirect trailing slash
     ];
     
@@ -99,7 +99,18 @@ class HttpKernel extends Kernel
             GuardMiddleware::class,            
         ],
         'api'=>[
-           JWTMiddleware::class,
+           // Allow preflight requests for route group
+           // didalam route harus prefligh method options
+           // contoh : 
+           //        Route::options("",function($request,$response){ return $response; })->add(CorsMiddleware::class);
+           // atau untuk semu routes
+           //        Route::options("/{routes:.*}[/{sub_routes:.*}]",function($request,$response){ return $response; })->add(CorsMiddleware::class);
+
+           CorsMiddleware::class, // cors origin
+
+           
+           // JWT valildation
+           JWTMiddleware::class, // If rules say we should not authenticate call next and retur 
         ],
     ];
 
@@ -163,8 +174,8 @@ class HttpKernel extends Kernel
         }
     }
 
-    protected function onFinishSetup()
-    {        
+    protected function performErrorMiddleware()
+    {
         $mid=$this->resolveErrorMilddleware();
         $errorHandle=$mid->getDefaultErrorHandler();        
         if($errorHandle instanceof \Slim\Handlers\ErrorHandler)
@@ -190,7 +201,19 @@ class HttpKernel extends Kernel
             //set default error render
             $errorHandle->setDefaultErrorRenderer('text/html',HtmlErrorRenderer::class);
         }
+    }
+
+    protected function onFinishSetup()
+    {    
+        // Add Slim routing middleware
+        $this->app->addRoutingMiddleware(); 
+
+        // Set the base path to run the app in a subdirectory.
+        // This path is used in urlFor().
         // add base path middleware
         app()->add(BasePathMiddleware::class);
+
+        // perform error middleware
+        $this->performErrorMiddleware();
     }
 }
