@@ -21,11 +21,5 @@ class ControllerView extends Controller
     protected function onCreated()
     {
         $this->view=$this->container->get(Twig::class);
-    }
-
-    protected function view(Response $response, string $template, array $data=[]):Response
-    {
-        $response->getBody()->write($this->view->fetch($template,$data));
-        return $response;
-    }
+    }    
 }

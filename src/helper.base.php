@@ -53,6 +53,7 @@ use Intoy\HebatSupport\Validation\Validator;
  * optional
  * 
  * validator
+ * folder_make_path
  */
 
 if(!function_exists('throw_when'))
@@ -648,5 +649,51 @@ if(!function_exists('validator'))
     function validator($messages=[])
     {
         return new Validator($messages);
+    }
+}
+
+if(!function_exists('folder_make_path'))
+{
+    /**
+     * @param string|string[] $folders
+     * @param string $error Out var for error
+     * @param string $savePath Out var for your variable path
+     * @return bool if success. Note path full absolute from path_public()
+     */
+    function folder_make_path($folders, &$error='', &$savePath='')
+    {
+        if((is_string($folders) && strlen($folders)<1)
+          || (is_array($folders) && count($folders)<1)
+        )
+        {
+            $error=sprintf('Human readable parameter resolve folder must be valid string or string[]');
+            return false;
+        }
+
+        $folders=is_string($folders)?[$folders]:$folders;
+        $dir="";
+        foreach(array_values($folders) as $nameFolder)
+        {
+            if(strlen($dir)>0)
+            {
+                $dir.=DIRECTORY_SEPARATOR;
+            }
+            $dir.=$nameFolder;
+            $full_dir=path_public($dir);
+            if(!is_dir($full_dir) && !mkdir($full_dir))
+            {
+                $error=sprintf('Gagal membuat/mengakses folder %s.',$nameFolder);
+                if(!is_production())
+                {
+                    $error.=' Target folder "'.$full_dir.'"';
+                }
+                $error.='. Hubungi Administrator';
+                return false;
+            }
+
+            $savePath=$full_dir;
+        }
+
+        return true;
     }
 }
