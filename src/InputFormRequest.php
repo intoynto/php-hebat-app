@@ -233,6 +233,15 @@ class InputFormRequest extends InputRequest
     }
 
     /**
+     * Apakah request kali ini adalah proses update/editing
+     * @return bool
+     */
+    protected function isEditing()
+    {
+        return false;
+    }
+
+    /**
      * Get current item 
      * @return stdClass|mixed
      */
