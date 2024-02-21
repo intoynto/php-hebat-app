@@ -137,9 +137,9 @@ if (!function_exists('class_basename')) {
 if(!function_exists('app'))
 {
     /**
-     * @return App
+     * @return App|null
      */
-    function app():App
+    function app():App|null
     {
         return AppFactory::$app;
     }
@@ -149,15 +149,22 @@ if (!function_exists('config'))
 {
     function config($path = null, $value = null)
     {
-        $config = app()->resolve('config');
+        $app=app();
+        if($app)
+        {
+            $config=$app && $app->has('config')?$app->resolve('config'):null;
 
-        if (is_null($value)) {
-            return data_get($config, $path);
+            if (is_null($value)) {
+                return data_get($config, $path);
+            }
+
+            // rebind value
+            data_set($config, $path, $value);
+            $app->bind('config', $config);
         }
-
-        data_set($config, $path, $value);
-
-        app()->bind('config', $config);
+        else {
+            return null;
+        }
     }
 }
 
@@ -165,9 +172,12 @@ if(!function_exists('is_production')){
     function is_production  ():bool 
     {
         $env='production';
-        if(app()->has('config'))
+        if(app())
         {
-            $env=(string)config('app.env');
+            if(app()->has('config'))
+            {
+                $env=(string)config('app.env');
+            }
         }
         else {
             $env=env('APP_ENV','production');
