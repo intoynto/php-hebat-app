@@ -650,27 +650,16 @@ if (!function_exists('optional')) {
     }
 }
 
-if(!function_exists('validator'))
-{
-    /**
-     * @param array $messages
-     * @return ValidatorInterface
-     */
-    function validator($messages=[])
-    {
-        return new Validator($messages);
-    }
-}
-
 if(!function_exists('folder_make_path'))
 {
     /**
      * @param string|string[] $folders
-     * @param string $error Out var for error
-     * @param string $savePath Out var for your variable path
-     * @return bool if success. Note path full absolute from path_public()
+     * @param string $error Output variable jika ada error
+     * @param string $savePath Output variable hasil path
+     * @param string $path_public start/awal folder. Gunakan fungsi : path_public(), path_asset(). Jika null path_public diambil dari fungsi path_public()
+     * @return bool jika berhasil hasil akhir $savePath sudah ditambahkan DIRECTORY_SEPARATOR
      */
-    function folder_make_path($folders, &$error='', &$savePath='')
+    function folder_make_path($folders, &$error='', &$savePath='', $path_public=null)
     {
         if((is_string($folders) && strlen($folders)<1)
           || (is_array($folders) && count($folders)<1)
@@ -680,16 +669,24 @@ if(!function_exists('folder_make_path'))
             return false;
         }
 
+        // validasi path_public
+        if(!is_null($path_public))
+        {
+            $real_path=realpath($path_public);
+            $path_public=$real_path?$real_path:path_public();            
+        }
+        else {
+            $path_public=path_public();
+        }
+
         $folders=is_string($folders)?[$folders]:$folders;
-        $dir="";
         foreach(array_values($folders) as $nameFolder)
         {
-            if(strlen($dir)>0)
+            if(substr($path_public,strlen($path_public)-1,1)!==DIRECTORY_SEPARATOR)
             {
-                $dir.=DIRECTORY_SEPARATOR;
+                $path_public.=DIRECTORY_SEPARATOR;
             }
-            $dir.=$nameFolder;
-            $full_dir=path_public($dir);
+            $full_dir=$path_public.$nameFolder;
             if(!is_dir($full_dir) && !mkdir($full_dir))
             {
                 $error=sprintf('Gagal membuat/mengakses folder %s.',$nameFolder);
@@ -700,9 +697,11 @@ if(!function_exists('folder_make_path'))
                 $error.='. Hubungi Administrator';
                 return false;
             }
-
-            $savePath=$full_dir;
+            $path_public=$path_public.$nameFolder;
+            $savePath=$path_public;
         }
+
+        $savePath.=DIRECTORY_SEPARATOR;
 
         return true;
     }

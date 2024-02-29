@@ -86,7 +86,6 @@ class Session extends BaseSession
                 // no exception
             }
         }
-        
 
         // no validator. but resolve default validator
         return new Validator();
